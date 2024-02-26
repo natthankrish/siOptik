@@ -1,4 +1,4 @@
-package com.example.myfirstapp
+package com.example.ocr
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
