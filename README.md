@@ -1,86 +1,55 @@
-# Introduction
 
-This is a template for doing Android development using GitLab and [fastlane](https://fastlane.tools/).
-It is based on the tutorial for Android apps in general that can be found [here](https://developer.android.com/training/basics/firstapp/). 
-If you're learning Android at the same time, you can also follow along that
-tutorial and learn how to do everything all at once.
+# siOptik
 
-# Reference links
+## Clone Project
+- Install android studio [disini](https://developer.android.com/studio?_gl=1*1d1in5i*_up*MQ..gclid=CjwKCAiArfauBhApEiwAeoB7qD6qQ4QlOSEhVd7cRL1dCel4jpb3KhXPUWifxWPm5Xj4OxoCZLQOqBoC4TcQAvD_BwE&gclsrc=aw.ds) 
 
-- [GitLab CI Documentation](https://docs.gitlab.com/ee/ci/)
-- [Blog post: Android publishing with GitLab and fastlane](https://about.gitlab.com/2019/01/28/android-publishing-with-gitlab-and-fastlane/)
+- Pada Android Studio, new project from Version Control
 
-You'll definitely want to read through the blog post since that walks you in detail
-through a working production configuration using this model.
+- Salin https di bawah ini ke kolom URL pada Android Studio
+    ```
+    https://gitlab.informatika.org/k02-04-ppl/ocr-android.git
+    ```
+- Kemudian klik tombol `Clone` dan tunggu proses build 
 
-# Getting started
+## Run Program
+Ada 2 cara menjalankan progam, yaitu :
 
-First thing is to follow the [Android tutorial](https://developer.android.com/training/basics/firstapp/) and
-get Android Studio installed on your machine, so you can do development using
-the Android IDE. Other IDE options are possible, but not directly described or
-supported here. If you're using your own IDE, it should be fairly straightforward
-to convert these instructions to use with your preferred toolchain.
+- Menggunakan emulator Android studio. Lakukan instalasi dan setup emulator dengan panduan [berikut](https://developer.android.com/codelabs/basic-android-kotlin-compose-emulator?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-2%3F_gl%3D1*i2239y*_up*MQ..%26gclid%3DCjwKCAiAibeuBhAAEiwAiXBoJF1A0nyXQVSxzMkWNUHR-rC_QS-LLzuOQuGAuza8YaTqGqAArIYD6BoC28YQAvD_BwE%26gclsrc%3Daw.ds%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-emulator&_gl=1*4db5j7*_up*MQ..&gclid=CjwKCAiAibeuBhAAEiwAiXBoJF1A0nyXQVSxzMkWNUHR-rC_QS-LLzuOQuGAuza8YaTqGqAArIYD6BoC28YQAvD_BwE&gclsrc=aw.ds#0)
 
-## What's contained in this project
+- Menggunakan perangkat(smartphone) Android. Lakukan setup dengan panduan [berikut](https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-2%3F_gl%3D1*1r7mpl*_up*MQ..%26gclid%3DCjwKCAiAibeuBhAAEiwAiXBoJF1A0nyXQVSxzMkWNUHR-rC_QS-LLzuOQuGAuza8YaTqGqAArIYD6BoC28YQAvD_BwE%26gclsrc%3Daw.ds%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-connect-device&_gl=1*1r7mpl*_up*MQ..&gclid=CjwKCAiAibeuBhAAEiwAiXBoJF1A0nyXQVSxzMkWNUHR-rC_QS-LLzuOQuGAuza8YaTqGqAArIYD6BoC28YQAvD_BwE&gclsrc=aw.ds#6)
 
-### Android code
+## Edit Code Program
+Setelah anda berhasil men-cloning progam, pada bagian kiri atas terdapat directory, disarankan Anda untuk mengganti dropdown dari `Project` ke `Android`. Hal ini untuk membuat directory terlihat sederhana pada Android Studio.
 
-The state of this project is as if you followed the first few steps in the linked
-[Android tutorial](https://developer.android.com/training/basics/firstapp/) and
-have created your project. You're definitely going to want to open up the
-project and change the settings to match what you plan to build. In particular,
-you're at least going to want to change the following:
+Adapun komponen penting pada proyek ini dalam mengedit code progam sebagai berikut:
 
-- Application Name: "My First App"
-- Company Domain: "example.com"
 
-### Fastlane files
+- File `AndroidManifest.xml`, berisi code yang memuat tampilan aplikasi secara keseluruhan (bisa disebut `parent` dari semua file `.xml` pada code).
 
-It also has fastlane setup per our [blog post](https://about.gitlab.com/2019/01/28/android-publishing-with-gitlab-and-fastlane/) on
-getting GitLab CI set up with fastlane. Note that you may want to update your
-fastlane bundle to the latest version; if a newer version is available, the pipeline
-job output will tell you.
+- Folder `kotlin com.example.sioptik` atau main project, berisi source code dalam bahasa `kotlin` untuk mengimplemtasikan fungsi-fungsi yang diperlukan pada tampilan aplikasi Android.
 
-### Dockerfile build environment
+- Folder`res` (resourse), berupa kode untuk tampilan pada aplikasi yang ditulis dalam bahasa `.xml`. Folder `res` terdiri dari:
 
-In the root there is a Dockerfile which defines a build environment which will be
-used to ensure consistent and reliable builds of your Android application using
-the correct Android SDK and other details you expect. Feel free to add any
-build-time tools or whatever else you need here.
+    - Folder `drawable` umumnya berisi gambar (bisa jenis gambar atau berupa file `.xml`). Gambar ini biasa dipakai untuk keperluan gambar folder `layout`.
+    - Folder `layout` berisi file `.xml` yang membuat layout atau desain tampilan aplikasi Android.
+    - Folder `mipmap` hampir mirip dengan `drawable`, namun ini berisi resolusi gambar.
+    - Foder `values` berisi value-value yang disimpan seperti data string, color untuk desain tampilan dan sebagainya. `values` dapat dipanggil pada file `.xml` lainnya(biasanya folder `layout`) untuk ditampilkan pada tampilan atau keperluan mendesain tampilan pada aplikasi Android.
 
-We generate this environment as needed because installing the Android SDK
-for every pipeline run would be very slow.
+- `Gradle Scripts`, berisi file-file yang mem-build project, ada 2 file build yang biasa diedit untuk keperluan project, yaitu:
 
-### Gradle configuration
+    - `build.gradle.kts (Project: siOptik)` berisi plugins yang memuat library. Android sendiri telah menyimpan semua library yang dibutuhkan pada `kotlin("android")`, namun banyaknya versinya membuat dapat terjadi error compatible.
+    - `build.gradle.kts (Module: app)` berisi modul-modul dan dependencies yang digunakan (diimport).
 
-The gradle configuration is exactly as output by Android Studio except for the
-version name being updated to 
+    Setiap  perubahan version dan modul, lakukan `sync` jika diminta.
 
-Instead of:
 
-`versionName "1.0"`
+## Author
+### Kelompok K02-04
 
-It is now set to:
 
-`versionName "1.0-${System.env.VERSION_SHA}"`
 
-You'll want to update this for whatever versioning scheme you prefer.
 
-### Build configuration (`.gitlab-ci.yml`)
 
-The sample project also contains a basic `.gitlab-ci.yml` which will successfully 
-build the Android application.
 
-Note that for publishing to the test channels or production, you'll need to set
-up your secret API key. The stub code is here for that, but please see our
-[blog post](https://about.gitlab.com/2019/01/28/android-publishing-with-gitlab-and-fastlane/) for
-details on how to set this up completely. In the meantime, publishing steps will fail.
 
-The build script also handles automatic versioning by relying on the CI pipeline
-ID to generate a unique, ever increasing number. If you have a different versioning
-scheme you may want to change this.
-
-```yaml
-    - "export VERSION_CODE=$(($CI_PIPELINE_IID)) && echo $VERSION_CODE"
-    - "export VERSION_SHA=`echo ${CI_COMMIT_SHA:0:8}` && echo $VERSION_SHA"
-```
