@@ -1,5 +1,5 @@
 
-# siOptik
+# SiOptik
 
 ## Clone Project
 - Install android studio [disini](https://developer.android.com/studio?_gl=1*1d1in5i*_up*MQ..gclid=CjwKCAiArfauBhApEiwAeoB7qD6qQ4QlOSEhVd7cRL1dCel4jpb3KhXPUWifxWPm5Xj4OxoCZLQOqBoC4TcQAvD_BwE&gclsrc=aw.ds) 
