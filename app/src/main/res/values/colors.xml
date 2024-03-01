@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="white">#FFF</color>
+    <color name="blur">#999999</color>
+
     <!--Warna logo siOptik-->
     <color name="red">#DA251D</color>
     <color name="orange">#FF4202</color>
