@@ -1,0 +1,34 @@
+stages:          
+  - build
+  - test
+
+variables:
+  ANDROID_COMPILE_SDK: "34"
+  ANDROID_BUILD_TOOLS: "30.0.2" 
+  ANDROID_SDK_TOOLS: "commandlinetools-linux-7302050_latest.zip"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - chmod +x ./gradlew
+  - wget -q https://dl.google.com/android/repository/$ANDROID_SDK_TOOLS
+  - unzip -q $ANDROID_SDK_TOOLS -d sdk
+  - export ANDROID_HOME=`pwd`/sdk
+  - export PATH=$PATH:$ANDROID_HOME/tools/bin
+  - yes | sdkmanager --licenses
+  - sdkmanager "platforms;android-$ANDROID_COMPILE_SDK" "build-tools;$ANDROID_BUILD_TOOLS"
+
+build-job:       
+  stage: build
+  script:
+    - ./gradlew assembleDebug
+    - ./gradlew assembleRelease
+
+unit-test-job:   
+  stage: test    
+  script:
+    - ./gradlew test
+
+lint-test-job:   
+  stage: test    
+  script:
+    - ./gradlew lint
