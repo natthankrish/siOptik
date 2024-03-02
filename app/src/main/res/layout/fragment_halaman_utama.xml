@@ -20,7 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.333" />
+            app:layout_constraintVertical_bias="0.263" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="313dp"
@@ -31,43 +31,40 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView4">
 
             <Button
-                android:id="@+id/button1"
-                android:layout_width="294dp"
-                android:layout_height="51dp"
-                android:background="#EFC14B"
-                android:clickable="true"
-                android:text="Button"
-                android:textSize="34sp"
-                app:layout_constraintBottom_toTopOf="@+id/button2"
+                android:id="@+id/scan_button"
+                style="@style/HomePageButton"
+                android:background="@drawable/button_background"
+                android:drawableStart="@drawable/camera_icon"
+                android:drawablePadding="16dp"
+                android:text="Pindai Formulir"
+                app:layout_constraintBottom_toTopOf="@+id/history_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button2"
-                android:layout_width="294dp"
-                android:layout_height="51dp"
-                android:background="#EFC14B"
-                android:clickable="true"
-                android:text="Button"
-                android:textSize="34sp"
+                android:id="@+id/history_button"
+                style="@style/HomePageButton"
+                android:background="@drawable/button_background"
+                android:drawableStart="@drawable/history_icon"
+                android:drawablePadding="16dp"
+                android:text="Lihat Riwayat"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button3"
-                android:layout_width="294dp"
-                android:layout_height="51dp"
-                android:background="#EFC14B"
-                android:clickable="true"
-                android:text="Button"
-                android:textSize="34sp"
+                android:id="@+id/image_button"
+                style="@style/HomePageButton"
+                android:background="@drawable/button_background"
+                android:drawableStart="@drawable/image_icon"
+                android:drawablePadding="16dp"
+                android:text="Lihat Gambar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button2" />
+                app:layout_constraintTop_toBottomOf="@+id/history_button" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
