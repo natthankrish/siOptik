@@ -10,20 +10,12 @@
         android:label="Halaman Utama"
         tools:layout="@layout/fragment_halaman_utama">
         <action
-            android:id="@+id/action_halamanUtama_to_kamera"
-            app:destination="@id/kamera" />
-        <action
             android:id="@+id/action_halamanUtama_to_riwayat"
             app:destination="@id/riwayat" />
         <action
             android:id="@+id/action_halamanUtama_to_gambar"
             app:destination="@id/gambar" />
     </fragment>
-    <fragment
-        android:id="@+id/kamera"
-        android:name="com.example.sioptik.Kamera"
-        android:label="Kamera"
-        tools:layout="@layout/fragment_kamera"/>
     <fragment
         android:id="@+id/riwayat"
         android:name="com.example.sioptik.Riwayat"

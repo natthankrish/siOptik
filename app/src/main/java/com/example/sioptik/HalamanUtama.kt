@@ -1,5 +1,6 @@
 package com.example.sioptik
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,17 +22,22 @@ class HalamanUtama : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentHalamanUtamaBinding.inflate(inflater, container, false)
+        binding.scanButton.setOnClickListener {
+            val intent = Intent(activity, Kamera::class.java)
+            startActivity(intent)
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.scanButton.setOnClickListener {
-            val action = HalamanUtamaDirections.actionHalamanUtamaToKamera()
-            val navController = findNavController()
-            navController.navigate(action)
-        }
+//        binding.scanButton.setOnClickListener {
+//            val action = HalamanUtamaDirections.actionHalamanUtamaToKamera()
+//            val navController = findNavController()
+//            navController.navigate(action)
+//        }
 
     }
 
