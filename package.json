@@ -1,0 +1,19 @@
+{
+  "name": "ocr-android",
+  "version": "1.0.0",
+  "description": "## Clone Project - Install android studio [disini](https://developer.android.com/studio?_gl=1*1d1in5i*_up*MQ..gclid=CjwKCAiArfauBhApEiwAeoB7qD6qQ4QlOSEhVd7cRL1dCel4jpb3KhXPUWifxWPm5Xj4OxoCZLQOqBoC4TcQAvD_BwE&gclsrc=aw.ds)",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install"
+  },  
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.informatika.org:k02-04-ppl/ocr-android.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
+}
