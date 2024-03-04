@@ -1,0 +1,2 @@
+This data folder should contain all the images of KPPS forms. However, those images will be 'gitignored'.
+Download all the Images from the Drive and insert it into this Data Folder.
