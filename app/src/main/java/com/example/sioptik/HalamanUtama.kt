@@ -33,12 +33,6 @@ class HalamanUtama : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.scanButton.setOnClickListener {
-//            val action = HalamanUtamaDirections.actionHalamanUtamaToKamera()
-//            val navController = findNavController()
-//            navController.navigate(action)
-//        }
-
     }
 
 }
