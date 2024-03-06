@@ -19,6 +19,9 @@
         <activity
             android:name=".Kamera"
             android:exported="false" />
+        <activity
+            android:name=".HasilFoto"
+            android:exported="false" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".SplashScreen"
