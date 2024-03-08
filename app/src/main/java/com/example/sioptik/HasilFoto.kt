@@ -19,7 +19,7 @@ class HasilFoto :AppCompatActivity() {
         val imageUri: Uri = Uri.parse(intent.getStringExtra("image_uri"))
         val imageView: ImageView = findViewById(R.id.image_preview)
         imageView.setImageURI(imageUri)
-        val downloadButton = findViewById<Button>(R.id.download_button)
+        val downloadButton = findViewById<Button>(R.id.download_result_button)
         downloadButton.setOnClickListener {
             downloadImage(imageUri) // Call downloadImage here with imageUri
         }

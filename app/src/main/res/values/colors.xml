@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#007B7F</color>
     <color name="white">#FFF</color>
 
     <!--Warna logo siOptik-->
@@ -10,4 +10,7 @@
     <color name="orange">#FF4202</color>
     <color name="cream">#EFC14B</color>
     <color name="black">#000000</color>
+
+    <!-- Dark Shades-->
+    <color name="lightgray">#BFBFBF</color>
 </resources>
