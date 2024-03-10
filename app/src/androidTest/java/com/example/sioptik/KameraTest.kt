@@ -17,14 +17,11 @@ class KameraTest {
 
     @Test
     fun captureButton_isClickable() {
-        // Launch the activity to make the UI visible
         ActivityScenario.launch(Kamera::class.java)
 
-        // Check if the capture button is clickable
         onView(withId(R.id.captureButton))
             .check(matches(isClickable()))
 
-        // Optionally, simulate a click on the button
         onView(withId(R.id.captureButton)).perform(click())
     }
 
