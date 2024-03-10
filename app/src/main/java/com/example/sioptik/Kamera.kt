@@ -9,9 +9,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
-import androidx.camera.video.Recorder
-import androidx.camera.video.Recording
-import androidx.camera.video.VideoCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.sioptik.databinding.KameraBinding
@@ -104,7 +101,7 @@ class Kamera : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: return
-                    Intent(this@Kamera, HasilFoto::class.java).also { previewIntent ->
+                    Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
                         previewIntent.putExtra("image_uri", savedUri.toString())
                         startActivity(previewIntent)
                     }
