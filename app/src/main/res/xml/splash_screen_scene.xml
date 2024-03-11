@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start" >
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/SplashScreen"
+            android:id="@+id/textView"
+            android:visibility="invisible" />
+        <Constraint
+            android:id="@+id/SplashScreen"
+            android:elevation="16dp"
+            android:layout_width="230dp"
+            android:layout_height="388dp"
+            motion:layout_constraintBottom_toBottomOf="@id/textView"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="50dp"
+            android:scaleX="0.4"
+            android:scaleY="0.4"
+            android:visibility="invisible" />
+    </ConstraintSet>
+    <ConstraintSet
+        android:id="@+id/half"
+        motion:deriveConstraintsFrom="@+id/start" >
+        <Constraint
+            android:id="@+id/textView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            motion:layout_constraintTop_toBottomOf="@+id/SplashScreen"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
+        <Constraint
+            android:id="@+id/SplashScreen"
+            android:elevation="16dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:layout_width="230dp"
+            android:layout_height="388dp"
+            motion:layout_constraintBottom_toBottomOf="@id/textView"
+            android:visibility="visible"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="50dp" />
+    </ConstraintSet>
+    <ConstraintSet
+        android:id="@+id/end"
+        motion:deriveConstraintsFrom="@+id/half" >
+        <Constraint
+            android:id="@+id/textView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="visible"
+            motion:layout_constraintTop_toBottomOf="@+id/SplashScreen"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
+    </ConstraintSet>
+    <Transition
+        motion:constraintSetStart="@+id/start"
+        motion:constraintSetEnd="@+id/half"
+        motion:duration="1000"
+        motion:autoTransition="animateToEnd"
+        motion:transitionFlags="disableIntraAutoTransition"
+         />
+    <Transition
+        motion:constraintSetStart="@+id/half"
+        motion:constraintSetEnd="@+id/end"
+        motion:duration="1000"
+        motion:autoTransition="animateToEnd"
+        motion:transitionFlags="disableIntraAutoTransition"
+         />
+<!--    <Transition-->
+<!--        motion:constraintSetStart="@+id/start"-->
+<!--        motion:constraintSetEnd="@+id/end" />-->
+</MotionScene>

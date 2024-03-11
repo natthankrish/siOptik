@@ -26,11 +26,11 @@ class SplashScreen : AppCompatActivity() {
         progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
 
-        progressBar.max = 1500;
-        val curProgress = 1500;
+        progressBar.max = 2000;
+        val curProgress = 2000;
 
         ObjectAnimator.ofInt(progressBar, "progress", curProgress)
-            .setDuration(1500)
+            .setDuration(2000)
             .start()
 
         // postDelayed(Runnable, time) method
@@ -38,6 +38,6 @@ class SplashScreen : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 1500) // 3000 = delay/milliseconds.
+        }, 2000) // 3000 = delay/milliseconds.
     }
 }
