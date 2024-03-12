@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment_result_april_tag_types.AprilTagType000Fragment">
+    tools:context=".processing_result.fragment_result_april_tag_types.AprilTagType000Fragment">
 
 
     <LinearLayout

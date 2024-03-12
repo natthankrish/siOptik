@@ -1,4 +1,4 @@
-package com.example.sioptik.fragment_result_april_tag_types
+package com.example.sioptik.processing_result.fragment_result_april_tag_types
 
 import android.os.Bundle
 import android.view.LayoutInflater
