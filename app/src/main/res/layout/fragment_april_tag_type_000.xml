@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment_result_april_tag_types.AprilTagType000Fragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <TextView
+            style="@style/CandidateNumberTitle"
+            android:text="Jumlah Pasangan Calon Nomor Urut 1" />
+
+        <TextView
+            style="@style/CandidateNumberValue"
+            android:text="333" />
+
+        <TextView
+            style="@style/CandidateNumberTitle"
+            android:text="Jumlah Pasangan Calon Nomor Urut 2" />
+
+        <TextView
+            style="@style/CandidateNumberValue"
+            android:text="333" />
+
+        <TextView
+            style="@style/CandidateNumberTitle"
+            android:text="Jumlah Pasangan Calon Nomor Urut 3" />
+
+        <TextView
+            style="@style/CandidateNumberValue"
+            android:text="333" />
+    </LinearLayout>
+</FrameLayout>

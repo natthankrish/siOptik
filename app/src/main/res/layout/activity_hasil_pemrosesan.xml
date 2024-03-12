@@ -36,50 +36,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:baselineAligned="false">
 
                 <FrameLayout
-                    android:id="@+id/imagePlaceholderLeft"
-                    android:layout_width="0dp"
-                    android:layout_height="180dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:background="#e0e0e0" />
-
-                <FrameLayout
                     android:id="@+id/imagePlaceholderRight"
-                    android:layout_width="0dp"
-                    android:layout_height="180dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="360dp"
                     android:layout_weight="1"
                     android:background="#e0e0e0" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pjsitalic"
+                    android:text="Klik gambar di atas untuk melihat gambar dengan lebih jelas"
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/button_result_layout"
+            <Button
+                android:id="@+id/retry_processing_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/retry_recognition_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/result_button_bg"
-                    android:text="Ambil Ulang" />
-
-                <Button
-                    android:id="@+id/download_result_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/result_button_bg"
-                    android:text="Unduh" />
-
-            </LinearLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/result_button_bg"
+                android:text="PROSES ULANG GAMBAR" />
 
             <LinearLayout
                 android:id="@+id/pengenalan_otomatis_layout"
@@ -104,89 +85,11 @@
                     android:text="Bagian ini diisi secara otomatis"
                     android:textSize="12sp" />
 
-                <LinearLayout
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragmentContainerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/pjsregular"
-                        android:text="Jumlah Pasangan Calon Nomor Urut 1"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.25"
-                        android:background="@drawable/input_field_bg"
-                        android:enabled="false"
-                        android:fontFamily="@font/pjsregular"
-                        android:gravity="center_vertical"
-                        android:padding="8dp"
-                        android:text="333"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/pjsregular"
-                        android:text="Jumlah Pasangan Calon Nomor Urut 2"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.25"
-                        android:background="@drawable/input_field_bg"
-                        android:enabled="false"
-                        android:fontFamily="@font/pjsregular"
-                        android:gravity="center_vertical"
-                        android:padding="8dp"
-                        android:text="333"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/pjsregular"
-                        android:text="Jumlah Pasangan Calon Nomor Urut 3"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.25"
-                        android:background="@drawable/input_field_bg"
-                        android:enabled="false"
-                        android:fontFamily="@font/pjsregular"
-                        android:gravity="center_vertical"
-                        android:padding="8dp"
-                        android:text="333"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -329,18 +232,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/pjsregular"
-                android:text="Saya menyatakan bahwa data yang tertulis di halaman ini sudah benar"
+                android:fontFamily="@font/pjsitalic"
+                android:text="Simpan hasil data pada penyimpanan lokal"
+                android:checked="true"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/submit_button"
+                android:id="@+id/finish_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/result_button_bg"
-                android:text="KIRIM" />
+                android:text="SELESAI" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
