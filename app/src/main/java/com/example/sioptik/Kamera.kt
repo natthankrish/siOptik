@@ -105,10 +105,7 @@ class Kamera : AppCompatActivity() {
                         previewIntent.putExtra("image_uri", savedUri.toString())
                         startActivity(previewIntent)
                     }
-//                    Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
-//                        previewIntent.putExtra("image_uri", savedUri.toString())
-//                        startActivity(previewIntent)
-//                    }
+
                 }
 
             }
