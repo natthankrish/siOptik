@@ -28,11 +28,6 @@ class HalamanUtama : Fragment() {
             startActivity(cameraIntent)
         }
 
-        binding.imageButton.setOnClickListener {
-            val imageIntent = Intent(activity, Gambar::class.java)
-            startActivity(imageIntent)
-        }
-
         return binding.root
     }
 

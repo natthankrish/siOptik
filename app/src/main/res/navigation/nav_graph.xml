@@ -25,5 +25,5 @@
         android:id="@+id/gambar"
         android:name="com.example.sioptik.Gambar"
         android:label="Gambar"
-        tools:layout="@layout/gambar" />
+        tools:layout="@layout/fragment_gambar" />
 </navigation>
