@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import org.opencv.android.OpenCVLoader
 
 class Gambar : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
