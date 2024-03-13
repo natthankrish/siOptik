@@ -1,0 +1,2 @@
+ninja: Entering directory `D:\Folder Kuliah Cadangan\Sems 6\PPL\ocr-android\opencv\.cxx\Debug\i1h5i4vb\arm64-v8a'
+ninja: no work to do.

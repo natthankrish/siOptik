@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "siOptik"
 include(":app")
+include(":opencv")
  

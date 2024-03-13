@@ -2,6 +2,7 @@ package com.example.sioptik
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +24,13 @@ class HalamanUtama : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentHalamanUtamaBinding.inflate(inflater, container, false)
         binding.scanButton.setOnClickListener {
-            val intent = Intent(activity, Kamera::class.java)
-            startActivity(intent)
+            val cameraIntent = Intent(activity, Kamera::class.java)
+            startActivity(cameraIntent)
+        }
+
+        binding.imageButton.setOnClickListener {
+            val imageIntent = Intent(activity, Gambar::class.java)
+            startActivity(imageIntent)
         }
 
         return binding.root
