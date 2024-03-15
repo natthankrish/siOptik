@@ -125,10 +125,11 @@ class Kamera : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: return
-                    Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
+                    Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
                         previewIntent.putExtra("image_uri", savedUri.toString())
                         startActivity(previewIntent)
                     }
+
                 }
 
             }
