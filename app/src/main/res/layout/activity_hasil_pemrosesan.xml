@@ -70,7 +70,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/result_button_bg"
                 android:text="PROSES ULANG GAMBAR" />
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/april_tag"
+                />
             <LinearLayout
                 android:id="@+id/pengenalan_otomatis_layout"
                 android:layout_width="match_parent"
