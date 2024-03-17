@@ -1,19 +1,33 @@
 package com.example.sioptik
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sioptik.databinding.FragmentHalamanUtamaBinding
+import com.example.sioptik.databinding.FragmentRiwayatBinding
 
 class RecyclerViewAdapter(private val dataSet: Array<String>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val item: TextView
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val item: Button
 
         init {
             item = view.findViewById(R.id.item_riwayat)
+            item.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val clickedItem = dataSet[position]
+                    val intent = Intent(itemView.context, DetailRiwayat::class.java)
+                    intent.putExtra("data", clickedItem)
+                    itemView.context.startActivity(intent)
+                }
+            }
         }
     }
 

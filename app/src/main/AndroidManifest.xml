@@ -27,6 +27,7 @@
         <activity android:name=".HasilPemrosesan"/>
         <activity android:name=".ValidasiGambar" />
         <activity android:name=".Riwayat" />
+        <activity android:name=".DetailRiwayat" />
 
         <activity
             android:name=".SplashScreen"
