@@ -1,9 +1,11 @@
 package com.example.sioptik
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,6 +21,11 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 import android.util.Log
+import android.widget.ImageView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.view.PreviewView
 import java.text.SimpleDateFormat
@@ -30,6 +37,7 @@ class Kamera : AppCompatActivity() {
     private lateinit var viewBinding: KameraBinding
 
     private var imageCapture: ImageCapture? = null
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
 
     private lateinit var cameraExecutor: ExecutorService
@@ -46,9 +54,24 @@ class Kamera : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-
         viewBinding.captureButton.setOnClickListener { takePhoto() }
+        viewBinding.pickImage.setOnClickListener{pickImageFromGallery()}
         cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    private fun pickImageFromGallery(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type="image/*"
+        startActivityForResult(intent, IMAGE_REQUEST_CODE )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK){
+            data?.data?.let { uri ->
+                processImageUri(uri)
+            } ?: Toast.makeText(this, "Error: No image selected!", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -66,6 +89,7 @@ class Kamera : AppCompatActivity() {
             }
         }
     }
+
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
@@ -110,7 +134,6 @@ class Kamera : AppCompatActivity() {
             }
         )
     }
-
     private fun startCamera() {
         val viewFinder = findViewById<PreviewView>(R.id.viewFinder)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -145,7 +168,12 @@ class Kamera : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
-
+    private fun processImageUri(savedUri: Uri) {
+        Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
+            previewIntent.putExtra("image_uri", savedUri.toString())
+            startActivity(previewIntent)
+        }
+    }
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
@@ -168,5 +196,7 @@ class Kamera : AppCompatActivity() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+        val IMAGE_REQUEST_CODE = 100
+
     }
 }
