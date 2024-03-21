@@ -14,7 +14,9 @@
 
         <TextView
             style="@style/CandidateNumberTitle"
-            android:text="Jumlah Pasangan Calon Nomor Urut 1" />
+            android:text="Jumlah Pasangan Calon Nomor Urut 1"
+            android:fontFamily="@font/plus_jakarta_sans"
+            />
 
         <TextView
             style="@style/CandidateNumberValue"
@@ -22,7 +24,10 @@
 
         <TextView
             style="@style/CandidateNumberTitle"
-            android:text="Jumlah Pasangan Calon Nomor Urut 2" />
+            android:text="Jumlah Pasangan Calon Nomor Urut 2"
+            android:fontFamily="@font/plus_jakarta_sans"
+
+            />
 
         <TextView
             style="@style/CandidateNumberValue"
@@ -30,7 +35,10 @@
 
         <TextView
             style="@style/CandidateNumberTitle"
-            android:text="Jumlah Pasangan Calon Nomor Urut 3" />
+            android:text="Jumlah Pasangan Calon Nomor Urut 3"
+            android:fontFamily="@font/plus_jakarta_sans"
+
+            />
 
         <TextView
             style="@style/CandidateNumberValue"
