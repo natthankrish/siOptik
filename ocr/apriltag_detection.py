@@ -10,7 +10,7 @@ at_detector = Detector(
     
 )
 
-image_path = "test_apriltag4.jpg"
+image_path = "test_apriltag3.jpg"
 img = cv2.imread(image_path)
 gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
