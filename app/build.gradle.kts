@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.chaquo.python")
 }
 
 android {
@@ -18,6 +19,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64", "x86", "armeabi-v7a")
         }
     }
 
@@ -51,6 +55,21 @@ android {
     }
 }
 
+chaquopy{
+    defaultConfig{
+        buildPython("C:/Users/ASUS/AppData/Local/Programs/Python/Python311/python.exe")
+        pip{
+            install("opencv-python")
+        }
+    }
+    sourceSets{
+        getByName("main"){
+            srcDir("src/main/python")
+        }
+    }
+
+}
+
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -66,6 +85,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.test.espresso:espresso-intents:3.5.1")
     implementation("com.google.android.material:material:1.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

@@ -114,11 +114,7 @@ class Kamera : AppCompatActivity() {
                         "com.example.sioptik.provider",
                         tempFile
                     )
-
-                    Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
-                        previewIntent.putExtra("image_uri", savedUri.toString())
-                        startActivity(previewIntent)
-                    }
+                    processImageUri(savedUri)
                 }
 
             }
@@ -185,7 +181,7 @@ class Kamera : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
     private fun processImageUri(savedUri: Uri) {
-        Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
+        Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
             previewIntent.putExtra("image_uri", savedUri.toString())
             startActivity(previewIntent)
         }

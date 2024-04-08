@@ -50,8 +50,8 @@
                         android:id="@+id/processed_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="fitCenter"
-                        android:contentDescription="Processed Image" />
+                        android:contentDescription="Processed Image"
+                        android:scaleType="fitCenter" />
 
                 </FrameLayout>
 
