@@ -17,8 +17,18 @@
             android:text="Title" />
 
         <TextView
-            style="@style/CandidateNumberValue"
+            style="@style/CandidateNumberTitle"
             android:id="@+id/descriptionTextView"
             android:text="Description" />
+
+        <TextView
+            style="@style/CandidateNumberTitle"
+            android:id="@+id/aprilTagIdTextView"
+            android:text="April Tag Id Placeholder" />
+
+        <TextView
+            style="@style/CandidateNumberTitle"
+            android:id="@+id/tpsIdTextView"
+            android:text="TPS Id Placeholder" />
     </LinearLayout>
 </FrameLayout>

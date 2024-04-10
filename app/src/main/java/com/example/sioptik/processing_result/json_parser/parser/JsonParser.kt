@@ -9,6 +9,8 @@ object JsonParser {
         val jsonObject = JSONObject(jsonString)
         val title = jsonObject.getString("title")
         val description = jsonObject.getString("description")
+        val aprilTagId = jsonObject.getInt("aprilTagId")
+        val tpsId = jsonObject.getInt("tpsId")
 
         val candidatesJsonArray = jsonObject.getJSONArray("candidates")
         val candidatesList = mutableListOf<Candidate>()
@@ -26,8 +28,8 @@ object JsonParser {
         return JsonData(
             title = title,
             description = description,
-            aprilTagId = 0,
-            tpsId = 0,
+            aprilTagId = aprilTagId,
+            tpsId = tpsId,
             candidates = candidatesList
         )
     }

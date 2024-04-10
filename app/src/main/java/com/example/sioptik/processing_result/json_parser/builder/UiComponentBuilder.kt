@@ -16,7 +16,9 @@ object UiComponentBuilder {
         val rootView = LayoutInflater.from(context).inflate(R.layout.layout_json, null, false)
         val titleTextView = rootView.findViewById<TextView>(R.id.titleTextView)
         val descriptionTextView = rootView.findViewById<TextView>(R.id.descriptionTextView)
-        updateTitleAndDescription(jsonData, titleTextView, descriptionTextView)
+        val tpsIdTextView = rootView.findViewById<TextView>(R.id.tpsIdTextView)
+        val aprilTagIdTextView = rootView.findViewById<TextView>(R.id.aprilTagIdTextView)
+        updateSupportComponents(jsonData, titleTextView, descriptionTextView, tpsIdTextView, aprilTagIdTextView)
 
         val container = rootView.findViewById<LinearLayout>(R.id.resultsContainer)
         jsonData.candidates.forEach { candidate ->
@@ -26,9 +28,11 @@ object UiComponentBuilder {
         return rootView
     }
 
-    private fun updateTitleAndDescription(jsonData: JsonData, titleTextView: TextView, descriptionTextView: TextView) {
+    private fun updateSupportComponents(jsonData: JsonData, titleTextView: TextView, descriptionTextView: TextView, tpsIdTextView: TextView, aprilTagTextView: TextView) {
         titleTextView.text = jsonData.title
         descriptionTextView.text = jsonData.description
+        tpsIdTextView.text = jsonData.tpsId.toString()
+        aprilTagTextView.text = jsonData.aprilTagId.toString()
     }
 
     @SuppressLint("SetTextI18n")

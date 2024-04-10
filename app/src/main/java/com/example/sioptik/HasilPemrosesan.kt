@@ -33,28 +33,29 @@ class HasilPemrosesan : AppCompatActivity() {
 
         val jsonString = """
             {
-              "title": "2024 Presidential Election Results",
-              "description": "The official results of the 2024 presidential election.",
+              "title": "Hasil Pemilihan Presiden RI",
+              "description": "Deskripsi Hihihi",
+              "aprilTagId": 100,
+              "tpsId": 10,
               "candidates": [
                 {
                   "orderNumber": 1,
-                  "choiceName": "John Doe",
+                  "choiceName": "Alis",
                   "totalVoters": 500000
                 },
                 {
                   "orderNumber": 2,
-                  "choiceName": "Jane Smith",
+                  "choiceName": "Prabski",
                   "totalVoters": 450000
                 },
                 {
                   "orderNumber": 3,
-                  "choiceName": "Alex Johnson",
+                  "choiceName": "Skipper",
                   "totalVoters": 350000
                 }
               ]
             }
             """.trimIndent()
-
 
         val jsonData = JsonParser.parse(jsonString)
         viewModel.jsonData = jsonData
