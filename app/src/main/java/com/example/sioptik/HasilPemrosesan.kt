@@ -31,7 +31,30 @@ class HasilPemrosesan : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val jsonString = "{\"title\":\"Example Title\",\"description\":\"This is a description.\"}"
+        val jsonString = """
+            {
+              "title": "2024 Presidential Election Results",
+              "description": "The official results of the 2024 presidential election.",
+              "candidates": [
+                {
+                  "orderNumber": 1,
+                  "choiceName": "John Doe",
+                  "totalVoters": 500000
+                },
+                {
+                  "orderNumber": 2,
+                  "choiceName": "Jane Smith",
+                  "totalVoters": 450000
+                },
+                {
+                  "orderNumber": 3,
+                  "choiceName": "Alex Johnson",
+                  "totalVoters": 350000
+                }
+              ]
+            }
+            """.trimIndent()
+
 
         val jsonData = JsonParser.parse(jsonString)
         viewModel.jsonData = jsonData
