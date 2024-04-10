@@ -1,10 +1,10 @@
 package com.sioptik.main.processing_result
 
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import com.sioptik.main.R
 
 class FullScreenImageActivity : AppCompatActivity() {
