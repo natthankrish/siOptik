@@ -10,8 +10,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.example.sioptik.R
-import com.example.sioptik.SplashScreen
+import com.sioptik.main.R
+import com.sioptik.main.SplashScreen
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Test

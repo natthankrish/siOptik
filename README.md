@@ -26,7 +26,7 @@ Adapun komponen penting pada proyek ini dalam mengedit code progam sebagai berik
 
 - File `AndroidManifest.xml`, berisi code yang memuat tampilan aplikasi secara keseluruhan (bisa disebut `parent` dari semua file `.xml` pada code).
 
-- Folder `kotlin com.example.sioptik` atau main project, berisi source code dalam bahasa `kotlin` untuk mengimplemtasikan fungsi-fungsi yang diperlukan pada tampilan aplikasi Android.
+- Folder `kotlin com.sioptik.main` atau main project, berisi source code dalam bahasa `kotlin` untuk mengimplemtasikan fungsi-fungsi yang diperlukan pada tampilan aplikasi Android.
 
 - Folder`res` (resourse), berupa kode untuk tampilan pada aplikasi yang ditulis dalam bahasa `.xml`. Folder `res` terdiri dari:
 

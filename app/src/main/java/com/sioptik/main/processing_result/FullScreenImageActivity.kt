@@ -1,11 +1,11 @@
-package com.example.sioptik.processing_result
+package com.sioptik.main.processing_result
 
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
-import com.example.sioptik.R
+import com.sioptik.main.R
 
 class FullScreenImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

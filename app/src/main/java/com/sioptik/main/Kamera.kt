@@ -1,4 +1,4 @@
-package com.example.sioptik
+package com.sioptik.main
 
 import android.Manifest
 import android.content.Intent
@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.sioptik.databinding.KameraBinding
+import com.sioptik.main.databinding.KameraBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import android.widget.Toast
@@ -111,7 +111,7 @@ class Kamera : AppCompatActivity() {
 
                     val savedUri = FileProvider.getUriForFile(
                         this@Kamera,
-                        "com.example.sioptik.provider",
+                        "com.sioptik.main.provider",
                         tempFile
                     )
 

@@ -1,4 +1,4 @@
-package com.example.sioptik.processing_result.json_parser.builder
+package com.sioptik.main.processing_result.json_parser.builder
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.sioptik.R
-import com.example.sioptik.processing_result.json_parser.model.Candidate
-import com.example.sioptik.processing_result.json_parser.model.JsonData
+import com.sioptik.main.R
+import com.sioptik.main.processing_result.json_parser.model.Candidate
+import com.sioptik.main.processing_result.json_parser.model.JsonData
 
 object UiComponentBuilder {
     @SuppressLint("InflateParams", "MissingInflatedId")

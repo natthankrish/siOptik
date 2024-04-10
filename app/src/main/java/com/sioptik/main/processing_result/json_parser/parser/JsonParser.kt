@@ -1,7 +1,7 @@
-package com.example.sioptik.processing_result.json_parser.parser
+package com.sioptik.main.processing_result.json_parser.parser
 
-import com.example.sioptik.processing_result.json_parser.model.Candidate
-import com.example.sioptik.processing_result.json_parser.model.JsonData
+import com.sioptik.main.processing_result.json_parser.model.Candidate
+import com.sioptik.main.processing_result.json_parser.model.JsonData
 import org.json.JSONObject
 
 object JsonParser {

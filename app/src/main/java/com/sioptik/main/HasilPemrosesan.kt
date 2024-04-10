@@ -1,4 +1,4 @@
-package com.example.sioptik
+package com.sioptik.main
 
 import android.content.Intent
 import android.net.Uri
@@ -7,10 +7,10 @@ import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.example.sioptik.processing_result.DynamicContentFragment
-import com.example.sioptik.processing_result.FullScreenImageActivity
-import com.example.sioptik.processing_result.SharedViewModel
-import com.example.sioptik.processing_result.json_parser.parser.JsonParser
+import com.sioptik.main.processing_result.DynamicContentFragment
+import com.sioptik.main.processing_result.FullScreenImageActivity
+import com.sioptik.main.processing_result.SharedViewModel
+import com.sioptik.main.processing_result.json_parser.parser.JsonParser
 
 class HasilPemrosesan : AppCompatActivity() {
     private val viewModel: SharedViewModel by viewModels()
