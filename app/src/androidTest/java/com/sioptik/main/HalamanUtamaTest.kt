@@ -1,4 +1,4 @@
-package com.example.sioptik
+package com.sioptik.main
 
 import android.app.Activity
 import android.app.Instrumentation

@@ -1,4 +1,4 @@
-package com.example.sioptik
+package com.sioptik.main
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint

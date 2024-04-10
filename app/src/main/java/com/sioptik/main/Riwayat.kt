@@ -1,16 +1,12 @@
-package com.example.sioptik
+package com.sioptik.main
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 
-class Gambar : Fragment(){
+class Riwayat : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -20,6 +16,6 @@ class Gambar : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_gambar, container, false)
+        return inflater.inflate(R.layout.fragment_riwayat, container, false)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.sioptik.processing_result.json_parser.model
+package com.sioptik.main.processing_result.json_parser.model
 
 data class JsonData(
     val title: String,

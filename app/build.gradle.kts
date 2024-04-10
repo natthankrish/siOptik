@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.sioptik"
+    namespace = "com.sioptik.main"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.sioptik"
+        applicationId = "com.sioptik.main"
         minSdk = 29
         targetSdk = 34
         versionCode = 1

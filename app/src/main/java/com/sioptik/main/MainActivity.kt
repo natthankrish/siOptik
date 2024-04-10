@@ -1,4 +1,4 @@
-package com.example.sioptik
+package com.sioptik.main
 
 import androidx.appcompat.app.AppCompatActivity
 
