@@ -42,15 +42,14 @@ class Kamera : AppCompatActivity() {
         viewBinding = KameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
         } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
+
         viewBinding.captureButton.setOnClickListener { takePhoto() }
-        viewBinding.pickImage.setOnClickListener{pickImageFromGallery()}
+        viewBinding.pickImage.setOnClickListener { pickImageFromGallery() }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -88,11 +87,8 @@ class Kamera : AppCompatActivity() {
 
 
     private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageCapturedCallback() {
@@ -102,7 +98,6 @@ class Kamera : AppCompatActivity() {
 
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
-                    // Change the image proxy to bit map
                     val bitmap = imageProxyToBitmap(image)
                     image.close()
 
@@ -115,12 +110,8 @@ class Kamera : AppCompatActivity() {
                         tempFile
                     )
 
-                    Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
-                        previewIntent.putExtra("image_uri", savedUri.toString())
-                        startActivity(previewIntent)
-                    }
+                    processImageUri(savedUri)
                 }
-
             }
         )
     }
@@ -184,9 +175,9 @@ class Kamera : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
-    private fun processImageUri(savedUri: Uri) {
-        Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
-            previewIntent.putExtra("image_uri", savedUri.toString())
+    private fun processImageUri(imageUri: Uri) {
+        Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
+            previewIntent.putExtra("image_uri", imageUri.toString())
             startActivity(previewIntent)
         }
     }
