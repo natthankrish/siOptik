@@ -54,12 +54,12 @@ android {
         }
     }
 }
-
 chaquopy{
     defaultConfig{
-        buildPython("C:/Users/ASUS/AppData/Local/Programs/Python/Python311/python.exe")
         pip{
+            install("numpy")
             install("opencv-python")
+            install("opencv-contrib-python==4.5.1.48")
         }
     }
     sourceSets{
@@ -69,6 +69,7 @@ chaquopy{
     }
 
 }
+
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")

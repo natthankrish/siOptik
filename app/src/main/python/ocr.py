@@ -17,7 +17,7 @@ def main(image_path):
     # Membangun jalur ke file border.png yang berada di direktori yang sama dengan skrip ini
     border_path = os.path.join(script_dir, 'border.png')
     border = read_image(border_path)
-    print("Ini border :", border)
+
     # Scale down border since initial picture is too huge
     border = resize_image(border, 0.2)
     assert border is not None, "Border file was not detected"

@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -25,12 +26,14 @@ class ValidasiGambar : AppCompatActivity() {
     private var loadingDialog: Dialog? = null
     private lateinit var frameLayout: FrameLayout
     private var processedImageUri : String = ""
+    private lateinit var python: Python;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.validasi_gambar)
         frameLayout = findViewById(R.id.imageValidationContainer)
         if(!Python.isStarted()){
             Python.start(AndroidPlatform(this))
+            python = Python.getInstance()
         }
         val imageUriString = intent.getStringExtra("image_uri")
         if (imageUriString != null) {
@@ -64,11 +67,11 @@ class ValidasiGambar : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             showLoadingDialog()
             val processedImage = withContext(Dispatchers.IO) {
-                val python = Python.getInstance()
-                val module = python.getModule("ocr")
+                val module = python.getModule("apriltag")
                 val result = module.callAttr("main", imagePath)
                 result.toString()
             }
+            Log.e("Image", processedImage)
             hideLoadingDialog()
             val imageView = ImageView(this@ValidasiGambar).apply {
                 layoutParams = FrameLayout.LayoutParams(
