@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RiwayatDao {
     @Query("SELECT * FROM riwayat ORDER BY date DESC")
-    fun getAll(userEmail : String): Flow<List<RiwayatEntity>>
+    fun getAll(): Flow<List<RiwayatEntity>>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(riwayat: RiwayatEntity)
     @Delete
