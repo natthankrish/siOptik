@@ -75,7 +75,7 @@ class ValidasiGambar : AppCompatActivity() {
         val processedMat = imgProcessor.preprocessImage(originalMat)
 
         // Detect Borders
-        val borders = imgProcessor.detectBorders(originalMat, borderImage)
+        val borders = imgProcessor.detectBorders(imgProcessor.convertToGray(originalMat), imgProcessor.convertToGray(borderImage))
         val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, borders, "B")
 //        val grayBorderedMat = imgProcessor.convertToGray(borderedMat)
         Log.i("TEST", borders.toString())

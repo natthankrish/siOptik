@@ -1,9 +1,11 @@
 package com.sioptik.main.image_processor
 
+import android.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
+import android.widget.ImageView
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
@@ -14,6 +16,7 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
+
 
 class ImageProcessor {
 
@@ -38,7 +41,15 @@ class ImageProcessor {
 
     private fun applyAdaptiveThreshold(blurredMat: Mat): Mat {
         val thresholdMat = Mat()
-        Imgproc.adaptiveThreshold(blurredMat, thresholdMat, 255.0, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 11, 2.0)
+        Imgproc.adaptiveThreshold(
+            blurredMat,
+            thresholdMat,
+            255.0,
+            Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
+            Imgproc.THRESH_BINARY_INV,
+            11,
+            2.0
+        )
         return thresholdMat
     }
 
@@ -51,7 +62,8 @@ class ImageProcessor {
     }
 
     fun convertMatToBitmap(processedMat: Mat): Bitmap {
-        val resultBitmap = Bitmap.createBitmap(processedMat.cols(), processedMat.rows(), Bitmap.Config.ARGB_8888)
+        val resultBitmap =
+            Bitmap.createBitmap(processedMat.cols(), processedMat.rows(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(processedMat, resultBitmap)
         Log.i("TEST", resultBitmap.width.toString() + "|| " + resultBitmap.height.toString())
         return resultBitmap
@@ -66,7 +78,13 @@ class ImageProcessor {
     fun detectBoxes(processedMat: Mat): List<Rect> {
         val contours = ArrayList<MatOfPoint>()
         val hierarchy = Mat()
-        Imgproc.findContours(processedMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+        Imgproc.findContours(
+            processedMat,
+            contours,
+            hierarchy,
+            Imgproc.RETR_EXTERNAL,
+            Imgproc.CHAIN_APPROX_SIMPLE
+        )
         val squares = mutableListOf<Rect>()
         val aspect_threshold = 0.1
         val width_threshold = 50
@@ -77,7 +95,7 @@ class ImageProcessor {
             if (contourPoly.total() == 4L) {
                 val rect = Imgproc.boundingRect(MatOfPoint(*contourPoly.toArray()))
                 val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
-                if (aspectRatio >= (1 - aspect_threshold) && aspectRatio <= (1 + aspect_threshold) && rect.width > width_threshold){
+                if (aspectRatio >= (1 - aspect_threshold) && aspectRatio <= (1 + aspect_threshold) && rect.width > width_threshold) {
 //                    Log.i ("BOX", rect.toString() + "||" + rect.width.toString() + "||" + rect.height.toString())
                     squares.add(rect)
                 }
@@ -115,8 +133,12 @@ class ImageProcessor {
     }
 
 
-    fun visualizeContoursAndRectangles(processedMat: Mat, rectangles: List<Rect>, color: String): Mat {
-        if (!rectangles.isEmpty()){
+    fun visualizeContoursAndRectangles(
+        processedMat: Mat,
+        rectangles: List<Rect>,
+        color: String
+    ): Mat {
+        if (!rectangles.isEmpty()) {
             // Create a copy of the processed image to draw on
             val visualizedImage = processedMat
 
@@ -127,7 +149,7 @@ class ImageProcessor {
 
 
             var colorScale = Scalar(0.0, 0.0, 0.0)
-            if (color == "G"){
+            if (color == "G") {
                 colorScale = Scalar(0.0, 255.0, 0.0)
             } else if (color == "R") {
                 colorScale = Scalar(255.0, 0.0, 0.0)
@@ -138,7 +160,13 @@ class ImageProcessor {
             // Draw all detected rectangles
             rectangles.forEach { rect ->
 //                Log.i("TEST", rect.tl().toString() + "||" + rect.br().toString())
-                Imgproc.rectangle(visualizedImage, rect.tl(), rect.br(), colorScale, 8) // Draw Rectangle
+                Imgproc.rectangle(
+                    visualizedImage,
+                    rect.tl(),
+                    rect.br(),
+                    colorScale,
+                    8
+                ) // Draw Rectangle
             }
 
             Log.i("TEST", "HEHE" + visualizedImage.toString())
@@ -160,27 +188,48 @@ class ImageProcessor {
         return mat
     }
 
-    fun detectBorders(imageMat: Mat, borderImage: Mat): List<Rect> {
+//    fun detectBorders(imageMat: Mat, borderImage: Mat): List<Rect> {
+//        val result = Mat()
+//        Imgproc.matchTemplate(imageMat, borderImage, result, Imgproc.TM_CCOEFF_NORMED)
+//        Core.normalize(result, result, 0.0, 1.0, Core.NORM_MINMAX, -1, Mat())
+//
+//        val threshold = 0.8 // Adjust threshold as needed
+//        val locations = Mat()
+//        Core.findNonZero(result, locations)
+//        Log.i("TEST", locations.toString())
+//
+//        val rects = mutableListOf<Rect>()
+//        for (loc in 0 until locations.rows()) {
+//            val matchLoc = locations[0, loc]
+//            if (matchLoc != null) {
+//                val matchLocPt = Point(matchLoc[0], matchLoc[1])
+//                val rect = Rect(matchLocPt, Size(borderImage.cols().toDouble(), borderImage.rows().toDouble()))
+//                rects.add(rect)
+//            }
+//        }
+//        return rects
+//    }
+
+    fun detectBorders(mainImage: Mat, templateImage: Mat): List<Rect> {
         val result = Mat()
-        Imgproc.matchTemplate(imageMat, borderImage, result, Imgproc.TM_CCOEFF_NORMED)
-        Core.normalize(result, result, 0.0, 1.0, Core.NORM_MINMAX, -1, Mat())
+        Imgproc.matchTemplate(mainImage, templateImage, result, Imgproc.TM_CCOEFF_NORMED)
 
-        val threshold = 0.8 // Adjust threshold as needed
-        val locations = Mat()
-        Core.findNonZero(result, locations)
+        // Set a threshold for the matching result
+        val threshold = 0.8
+        val matches = mutableListOf<Rect>()
 
-        val rects = mutableListOf<Rect>()
-        for (loc in 0 until locations.rows()) {
-            val matchLoc = locations[0, loc]
-            if (matchLoc != null) {
-                val matchLocPt = Point(matchLoc[0], matchLoc[1])
-                val rect = Rect(matchLocPt, Size(borderImage.cols().toDouble(), borderImage.rows().toDouble()))
-                rects.add(rect)
-            }
+        val w = templateImage.cols()
+        val h = templateImage.rows()
+
+        // Find template matches
+        val mmr = Core.minMaxLoc(result)
+        if (mmr.maxVal >= threshold) {
+            // Draw rectangle around best match
+            val matchLoc = mmr.maxLoc
+            matches.add(Rect(matchLoc.x.toInt(), matchLoc.y.toInt(), w, h))
+
         }
-        return rects
-
+        return matches
     }
-
 
 }
