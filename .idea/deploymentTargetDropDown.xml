@@ -5,6 +5,12 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="testAprilTagInit()">
+        <State />
+      </entry>
+      <entry key="testImport()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

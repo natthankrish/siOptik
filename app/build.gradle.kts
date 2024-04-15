@@ -21,7 +21,7 @@ android {
             useSupportLibrary = true
         }
         ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64", "x86", "armeabi-v7a")
+            abiFilters.addAll(listOf("arm64-v8a", "x86_64", "x86", "armeabi-v7a"))
         }
     }
 
@@ -34,6 +34,13 @@ android {
             )
         }
     }
+
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("lib")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -53,11 +60,18 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    externalNativeBuild {
+        cmake {
+            path = file("CMakeLists.txt")
+        }
+    }
+    ndkVersion = "25.1.8937393"
 }
 
 chaquopy{
     defaultConfig{
-        buildPython("C:/Users/ASUS/AppData/Local/Programs/Python/Python311/python.exe")
+        buildPython("/opt/homebrew/bin/python3")
         pip{
             install("opencv-python")
         }
@@ -86,6 +100,7 @@ dependencies {
     implementation("androidx.test.espresso:espresso-intents:3.5.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
