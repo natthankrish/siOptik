@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.sioptik.main.image_processor.ImageProcessor
+import com.sioptik.main.processing_result.FullScreenImageActivity
 
 
 class ValidasiGambar : AppCompatActivity() {
@@ -21,6 +22,7 @@ class ValidasiGambar : AppCompatActivity() {
 
         val frameLayout = findViewById<FrameLayout>(R.id.imageValidationContainer)
         val imageUriString = intent.getStringExtra("image_uri")
+
 
         if (imageUriString != null) {
             val imageUri = Uri.parse(imageUriString)
@@ -37,6 +39,7 @@ class ValidasiGambar : AppCompatActivity() {
                     setImageBitmap(processedBitmap)
                 }
                 frameLayout.addView(imageView)
+
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(this, "Failed to load or process image", Toast.LENGTH_SHORT).show()
@@ -66,9 +69,11 @@ class ValidasiGambar : AppCompatActivity() {
 
         val originalMat = imgProcessor.convertBitmapToMat(bitmap)
         val processedMat = imgProcessor.preprocessImage(originalMat)
-        val rectangles = imgProcessor.detectRectangles(processedMat)
+        val boxes = imgProcessor.detectBoxes(processedMat)
+//        val rectangles = imgProcessor.detectRectangles(processedMat)
 
-        return imgProcessor.visualizeContoursAndRectangles(processedMat, rectangles)
+
+        return imgProcessor.visualizeContoursAndRectangles(processedMat, boxes)
     }
 
 }

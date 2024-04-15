@@ -1,6 +1,7 @@
 package com.sioptik.main.image_processor
 
 import android.graphics.Bitmap
+import android.util.Log
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
@@ -55,6 +56,28 @@ class ImageProcessor {
         val originalMat = Mat()
         Utils.bitmapToMat(bitmap, originalMat)
         return originalMat
+    }
+
+    fun detectBoxes(processedMat: Mat): List<Rect> {
+        val contours = ArrayList<MatOfPoint>()
+        val hierarchy = Mat()
+        Imgproc.findContours(processedMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+        val squares = mutableListOf<Rect>()
+        val threshold = 0.1
+
+        contours.forEach {
+            val contourPoly = MatOfPoint2f()
+            Imgproc.approxPolyDP(MatOfPoint2f(*it.toArray()), contourPoly, 3.0, true)
+            if (contourPoly.total() == 4L) {
+                val rect = Imgproc.boundingRect(MatOfPoint(*contourPoly.toArray()))
+                val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
+                if (aspectRatio >= (1 - threshold) && aspectRatio <= (1 + threshold)){
+                    Log.i ("BOX", rect.toString() + "||" + rect.width.toString() + "||" + rect.height.toString())
+                    squares.add(rect)
+                }
+            }
+        }
+        return squares
     }
 
     fun detectRectangles(processedMat: Mat): List<Rect> {
