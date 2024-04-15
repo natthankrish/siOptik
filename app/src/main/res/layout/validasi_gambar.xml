@@ -11,6 +11,14 @@
         android:orientation="vertical"
         android:gravity="center">
 
+        <Button
+            android:id="@+id/april_tag"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            style="@style/GeneralButton"
+            android:text="TAG" />
+
         <FrameLayout
             android:id="@+id/imageValidationContainer"
             android:layout_width="355dp"

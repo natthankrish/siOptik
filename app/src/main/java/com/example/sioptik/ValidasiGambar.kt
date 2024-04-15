@@ -29,10 +29,11 @@ class ValidasiGambar : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.validasi_gambar)
         frameLayout = findViewById(R.id.imageValidationContainer)
-        if(!Python.isStarted()){
-            Python.start(AndroidPlatform(this))
-        }
+//        if(!Python.isStarted()){
+//            Python.start(AndroidPlatform(this))
+//        }
         val imageUriString = intent.getStringExtra("image_uri")
+        val id = intent.getStringExtra("apriltag")
         if (imageUriString != null) {
             val imageUri = Uri.parse(imageUriString)
             val imageFile = uriToFile(this, imageUri,"temp_image.jpg")
@@ -47,11 +48,14 @@ class ValidasiGambar : AppCompatActivity() {
 
         val retryButton = findViewById<Button>(R.id.retryButton)
         val sendButton = findViewById<Button>(R.id.sendButton)
+        val tagButton = findViewById<Button>(R.id.april_tag)
 
         retryButton.setOnClickListener {
             val cameraIntent = Intent(this, Kamera::class.java)
             startActivity(cameraIntent)
         }
+
+        tagButton.text = id;
 
         sendButton.setOnClickListener {
             Intent(this, HasilPemrosesan::class.java).also { previewIntent ->
@@ -62,14 +66,16 @@ class ValidasiGambar : AppCompatActivity() {
     }
     private fun processImage(imagePath: String) {
         lifecycleScope.launch(Dispatchers.Main) {
-            showLoadingDialog()
-            val processedImage = withContext(Dispatchers.IO) {
-                val python = Python.getInstance()
-                val module = python.getModule("ocr")
-                val result = module.callAttr("main", imagePath)
-                result.toString()
-            }
-            hideLoadingDialog()
+            // Commented for C Apriltag Testing
+//            showLoadingDialog()
+//            val processedImage = withContext(Dispatchers.IO) {
+//                val python = Python.getInstance()
+//                val module = python.getModule("ocr")
+//                val result = module.callAttr("main", imagePath)
+//                result.toString()
+//            }
+//            hideLoadingDialog()
+            val processedImage = imagePath
             val imageView = ImageView(this@ValidasiGambar).apply {
                 layoutParams = FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT,

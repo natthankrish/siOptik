@@ -36,7 +36,9 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="313" />
+                  <entry key="OPPO CPH1969" value="120" />
                   <entry key="Pixel_5_API_29" value="343" />
+                  <entry key="Pixel_5_API_34" value="120" />
                   <entry key="Tests" value="583" />
                 </map>
               </option>

@@ -9,27 +9,30 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageCapture
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.example.sioptik.databinding.KameraBinding
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import android.widget.Toast
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.core.Preview
-import androidx.camera.core.CameraSelector
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.example.sioptik.apriltag.AprilTagNative
+import com.example.sioptik.apriltag.AprilTagDetection
+import com.example.sioptik.databinding.KameraBinding
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
+import java.util.ArrayList
 import java.util.Locale
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class Kamera : AppCompatActivity() {
     private lateinit var viewBinding: KameraBinding
@@ -41,6 +44,7 @@ class Kamera : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = KameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        AprilTagNative.apriltag_init("tag36h10", 2, 1.0, 0.0, 4)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -65,7 +69,7 @@ class Kamera : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK){
             data?.data?.let { uri ->
-                processImageUri(uri)
+                processImageUri(uri, 0)
             } ?: Toast.makeText(this, "Error: No image selected!", Toast.LENGTH_LONG).show()
         }
     }
@@ -90,6 +94,7 @@ class Kamera : AppCompatActivity() {
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
+        Log.i("CAMERA SHUTT", "Masuk sini")
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
@@ -103,18 +108,38 @@ class Kamera : AppCompatActivity() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
                     // Change the image proxy to bit map
+                    Log.i("CAMERA SELESAI", "Masuk sini")
                     val bitmap = imageProxyToBitmap(image)
                     image.close()
 
+                    Log.i("CAMERA SELESAI", "Masuk sini 2")
+
                     val tempFile = createTempFile()
                     saveBitmapToFile(bitmap, tempFile)
+
+                    Log.i("CAMERA SELESAI", "Masuk sini 3")
+
+                    val width = bitmap!!.width
+                    val height = bitmap.height
+                    val byteArray = getNV21(width, height, bitmap)
+
+                    Log.i("CAMERA SELESAI", width.toString() + " " + height.toString())
+
+                    val detections : ArrayList<AprilTagDetection> = AprilTagNative.apriltag_detect_yuv(byteArray, width, height)
+                    var id = 0
+                    for (detection : AprilTagDetection in detections) {
+                        id = detection.id
+                        Log.i("ID", detection.id.toString())
+                        break
+                    }
+                    Log.i("DETECTION LENGTH", detections.size.toString())
 
                     val savedUri = FileProvider.getUriForFile(
                         this@Kamera,
                         "com.example.sioptik.provider",
                         tempFile
                     )
-                    processImageUri(savedUri)
+                    processImageUri(savedUri, id)
                 }
 
             }
@@ -180,9 +205,10 @@ class Kamera : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
-    private fun processImageUri(savedUri: Uri) {
+    private fun processImageUri(savedUri: Uri, id: Int) {
         Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
             previewIntent.putExtra("image_uri", savedUri.toString())
+            previewIntent.putExtra("apriltag", id.toString())
             startActivity(previewIntent)
         }
     }
@@ -194,6 +220,59 @@ class Kamera : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+    }
+
+    fun getNV21(inputWidth: Int, inputHeight: Int, scaled: Bitmap): ByteArray? {
+        var scaled = scaled
+        val argb = IntArray(inputWidth * inputHeight)
+
+        // Ensure that the bitmap is in ARGB_8888 format
+        scaled = scaled.copy(Bitmap.Config.ARGB_8888, true)
+        scaled.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight)
+        val yuv = ByteArray(inputWidth * inputHeight * 3 / 2)
+        encodeYUV420SP(yuv, argb, inputWidth, inputHeight)
+        scaled.recycle()
+        return yuv
+    }
+
+    fun encodeYUV420SP(yuv420sp: ByteArray, argb: IntArray, width: Int, height: Int) {
+        try {
+            val frameSize = width * height
+            var yIndex = 0
+            var uvIndex = frameSize
+            var a: Int
+            var R: Int
+            var G: Int
+            var B: Int
+            var Y: Int
+            var U: Int
+            var V: Int
+            var index = 0
+            for (j in 0 until height) {
+                for (i in 0 until width) {
+                    a = argb[index] and -0x1000000 shr 24 // a is not used obviously
+                    R = argb[index] and 0xff0000 shr 16
+                    G = argb[index] and 0xff00 shr 8
+                    B = argb[index] and 0xff shr 0
+
+                    // well known RGB to YUV algorithm
+                    Y = (66 * R + 129 * G + 25 * B + 128 shr 8) + 16
+                    U = (-38 * R - 74 * G + 112 * B + 128 shr 8) + 128
+                    V = (112 * R - 94 * G - 18 * B + 128 shr 8) + 128
+
+                    // NV21 has a plane of Y and interleaved planes of VU each sampled by a factor of 2
+                    //    meaning for every 4 Y pixels there are 1 V and 1 U.  Note the sampling is every other
+                    //    pixel AND every other scanline.
+                    yuv420sp[yIndex++] = (if (Y < 0) 0 else if (Y > 255) 255 else Y).toByte()
+                    if (j % 2 == 0 && index % 2 == 0) {
+                        yuv420sp[uvIndex++] = (if (V < 0) 0 else if (V > 255) 255 else V).toByte()
+                        yuv420sp[uvIndex++] = (if (U < 0) 0 else if (U > 255) 255 else U).toByte()
+                    }
+                    index++
+                }
+            }
+        } catch (e: IndexOutOfBoundsException) {
+        }
     }
 
     companion object {

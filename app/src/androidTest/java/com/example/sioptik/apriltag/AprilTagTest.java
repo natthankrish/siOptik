@@ -108,6 +108,7 @@ public class AprilTagTest {
         AssetManager assetManager = context.getAssets();
 
         try {
+            Log.i("MULAI", "MULAI");
             InputStream inputStream = assetManager.open("test9.jpg");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             int width = bitmap.getWidth();
