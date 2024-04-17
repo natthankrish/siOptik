@@ -1,4 +1,4 @@
-package com.example.sioptik.apriltag;
+package com.sioptik.main.apriltag;
 
 public class AprilTagDetection {
     public int id;

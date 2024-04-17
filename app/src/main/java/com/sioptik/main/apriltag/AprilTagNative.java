@@ -1,7 +1,7 @@
-package com.example.sioptik.apriltag;
+package com.sioptik.main.apriltag;
 
 import android.graphics.Bitmap;
-import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
