@@ -115,15 +115,15 @@ class ValidasiGambar : AppCompatActivity() {
             val padding = 30;
             val w = originalMat.width()
             val h = originalMat.height()
-            Log.i("TEST W H", w.toString() + "||" +h.toString())
+//            Log.i("TEST W H", w.toString() + "||" +h.toString())
             val tl_rect = borderContainer[0]
             val br_rect = borderContainer[3]
-            Log.i("TEST TL BR", tl_rect.toString() + "||" + br_rect.toString())
+//            Log.i("TEST TL BR", tl_rect.toString() + "||" + br_rect.toString())
             var tlx = if (tl_rect.x - padding <= 0) 0 else tl_rect.x - padding
             val tly = if (tl_rect.y - padding <= 0) 0 else tl_rect.y - padding
             val brx = if (br_rect.x + (br_rect.width) + padding >= w) w else br_rect.x + (br_rect.width) + padding
             val bry = if (br_rect.y + (br_rect.height) + padding >= h) h else br_rect.y + (br_rect.height) + padding
-            Log.i("TEST BOUNDARIES", tlx.toString() + "||" + tly.toString() + "||" + brx.toString() + "||" + bry.toString())
+//            Log.i("TEST BOUNDARIES", tlx.toString() + "||" + tly.toString() + "||" + brx.toString() + "||" + bry.toString())
 
             croppedResultImage = Mat(resultImage, Rect(tlx, tly, (brx - tlx), (bry - tly)))
         }
