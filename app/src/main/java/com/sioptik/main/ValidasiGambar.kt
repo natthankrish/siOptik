@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.sioptik.main.image_processor.ImageProcessor
 import com.sioptik.main.processing_result.FullScreenImageActivity
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 
 
@@ -69,16 +70,38 @@ class ValidasiGambar : AppCompatActivity() {
     private fun processImage(bitmap: Bitmap): Bitmap {
         val imgProcessor = ImageProcessor()
         val borderImageDrawable = R.drawable.border_smaller
+        val borderImageSmallDrawable = R.drawable.border_smallest
         val borderImage = imgProcessor.loadDrawableImage(this, borderImageDrawable)
+        val borderImageSmall = imgProcessor.loadDrawableImage(this, borderImageSmallDrawable)
 
+        // Initial Mat
         val originalMat = imgProcessor.convertBitmapToMat(bitmap)
         val processedMat = imgProcessor.preprocessImage(originalMat)
 
-        // Detect Borders
-        val borders = imgProcessor.detectBorders(imgProcessor.convertToGray(originalMat), imgProcessor.convertToGray(borderImage))
-        val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, borders, "B")
-//        val grayBorderedMat = imgProcessor.convertToGray(borderedMat)
-        Log.i("TEST", borders.toString())
+        // SplittedImages
+        val splittedImagesRects = imgProcessor.splitImageRects(originalMat)
+        val splittedImages = imgProcessor.splitImage(originalMat)
+//        Log.i("TESTIMG", splittedImages.toString())
+        val rectContainer = mutableListOf<Rect>()
+
+        splittedImages.forEachIndexed { index, mat ->
+            // Detect Borders
+            var border = imgProcessor.detectBorder(imgProcessor.convertToGray(mat), imgProcessor.convertToGray(borderImage))
+            if (border == null){
+                border = imgProcessor.detectBorder(imgProcessor.convertToGray(mat), imgProcessor.convertToGray(borderImageSmall))
+            }
+            Log.i("TEST BORDER", border.toString())
+
+            if (border != null){
+                // Assume that it will only get 1
+                val currentRect = splittedImagesRects[index]
+                val adjustedBorder = Rect((currentRect.x + border.x), (currentRect.y + border.y), border.width, border.height)
+                rectContainer.add(adjustedBorder)
+            } else {
+                Log.i("TEST BORDER DETECTION", "Border Not Found")
+            }
+        }
+        val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, rectContainer, "B")
 
         // Detect Boxes
         val boxes = imgProcessor.detectBoxes(processedMat)

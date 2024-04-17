@@ -210,13 +210,55 @@ class ImageProcessor {
 //        return rects
 //    }
 
-    fun detectBorders(mainImage: Mat, templateImage: Mat): List<Rect> {
+    fun splitImage (image:Mat) : List<Mat> {
+        // Split itu n x n parts
+        val n = 3
+        val w = image.width()
+        val h = image.height()
+        val part_w = (w / n).toInt()
+        val part_h = (h / n).toInt()
+        val image_parts = mutableListOf<Mat>()
+
+        val tl : Mat = Mat(image, Rect(0,0, part_w, part_h))        // val tl_rect : Rect
+        image_parts.add(tl)
+        val tr : Mat = Mat(image, Rect((n-1)*part_w, 0, part_w, part_h)) // val tr_rect : Rect
+        image_parts.add(tr)
+        val bl : Mat = Mat(image, Rect(0, (n-1)*part_h, part_w, part_h)) // val bl_rect: Rect
+        image_parts.add(bl)
+        val br : Mat = Mat(image, Rect((n-1)*part_w, (n-1)*part_h, part_w, part_h))  //val br_rect : Rect
+        image_parts.add(br)
+
+        return image_parts
+    }
+
+    fun splitImageRects (image:Mat) : List<Rect> {
+        // Split itu n x n parts
+        val n = 3
+        val w = image.width()
+        val h = image.height()
+        val part_w = (w / n).toInt()
+        val part_h = (h / n).toInt()
+        val rects = mutableListOf<Rect>()
+
+        val tl : Rect =  Rect(0,0, part_w, part_h)        // val tl_rect : Rect
+        rects.add(tl)
+        val tr : Rect = Rect((n-1)*part_w, 0, part_w, part_h) // val tr_rect : Rect
+        rects.add(tr)
+        val bl : Rect = Rect(0, (n-1)*part_h, part_w, part_h) // val bl_rect: Rect
+        rects.add(bl)
+        val br : Rect = Rect((n-1)*part_w, (n-1)*part_h, part_w, part_h)  //val br_rect : Rect
+        rects.add(br)
+
+        return rects
+    }
+
+    fun detectBorder(mainImage: Mat, templateImage: Mat): Rect? {
         val result = Mat()
         Imgproc.matchTemplate(mainImage, templateImage, result, Imgproc.TM_CCOEFF_NORMED)
 
         // Set a threshold for the matching result
-        val threshold = 0.8
-        val matches = mutableListOf<Rect>()
+        val threshold = 0.7
+//        val matches = mutableListOf<Rect>()
 
         val w = templateImage.cols()
         val h = templateImage.rows()
@@ -226,10 +268,10 @@ class ImageProcessor {
         if (mmr.maxVal >= threshold) {
             // Draw rectangle around best match
             val matchLoc = mmr.maxLoc
-            matches.add(Rect(matchLoc.x.toInt(), matchLoc.y.toInt(), w, h))
+            return Rect(matchLoc.x.toInt(), matchLoc.y.toInt(), w, h)
 
         }
-        return matches
+        return null
     }
 
 }
