@@ -25,6 +25,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.sioptik.main.databinding.KameraBinding
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -36,7 +38,7 @@ import java.util.concurrent.Executors
 
 class Kamera : AppCompatActivity() {
     private lateinit var viewBinding: KameraBinding
-    private val MAX_WIDTH = 2400;
+    private val MAX_WIDTH = 1600;
 
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -162,10 +164,12 @@ class Kamera : AppCompatActivity() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
                     val bitmap = imageProxyToBitmap(image)
+                    val scaledBitmap = scaleDownBitmap(bitmap!!, MAX_WIDTH)
+
                     image.close()
 
                     val tempFile = createTempFile()
-                    saveBitmapToFile(bitmap, tempFile)
+                    saveBitmapToFile(scaledBitmap, tempFile)
 
                     val savedUri = FileProvider.getUriForFile(
                         this@Kamera,
@@ -246,6 +250,38 @@ class Kamera : AppCompatActivity() {
         }
     }
 
+    fun scaleDownBitmap(originalBitmap: Bitmap, maxWidth: Int): Bitmap? {
+        return try {
+            // Calculate the aspect ratio of the original bitmap
+            val aspectRatio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
+            // Create a ByteArrayOutputStream to write the scaled bitmap
+            val outputStream = ByteArrayOutputStream()
+            // Compress the bitmap to the OutputStream with a quality of 100 (maximum quality)
+            originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            // Create an input stream from the ByteArrayOutputStream
+            val inputStream = ByteArrayInputStream(outputStream.toByteArray())
+            // Decode the input stream to get the bitmap
+            val options = BitmapFactory.Options().apply {
+                // Set inJustDecodeBounds to true to get the dimensions of the bitmap without loading it into memory
+                inJustDecodeBounds = true
+            }
+            BitmapFactory.decodeStream(inputStream, null, options)
+            // Close the InputStream
+            inputStream.close()
+            // Calculate the sample size based on the maximum width
+            options.inSampleSize = calculateSampleSize(options, maxWidth)
+            // Decode the input stream with the calculated sample size
+            options.inJustDecodeBounds = false
+            val scaledBitmap = BitmapFactory.decodeStream(ByteArrayInputStream(outputStream.toByteArray()), null, options)
+            // Return the scaled bitmap
+            scaledBitmap
+        } catch (e: IOException) {
+            // Handle any exceptions that may occur
+            e.printStackTrace()
+            null // Return null in case of an error
+        }
+    }
+
     // Function to make the image smaller by scaling down while preserving aspect ratio
     fun scaleDownImage(contentResolver: ContentResolver, uri: Uri, maxWidth: Int): Bitmap? {
         return try {
@@ -259,17 +295,12 @@ class Kamera : AppCompatActivity() {
             BitmapFactory.decodeStream(inputStream, null, options)
             // Close the InputStream
             inputStream?.close()
-
             // Calculate the sample size based on the maximum width
             options.inSampleSize = calculateSampleSize(options, maxWidth)
-
             // Decode the image file with the calculated sample size
             options.inJustDecodeBounds = false
             val scaledBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri), null, options)
-
             // Optionally rotate the Bitmap if necessary
-            // val rotatedBitmap = rotateBitmap(scaledBitmap, getRotationAngle(contentResolver, uri))
-
             scaledBitmap // Return the scaled and rotated Bitmap
         } catch (e: IOException) {
             // Handle any exceptions that may occur

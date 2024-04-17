@@ -165,7 +165,7 @@ class ImageProcessor {
                     rect.tl(),
                     rect.br(),
                     colorScale,
-                    8
+                    6
                 ) // Draw Rectangle
             }
 
