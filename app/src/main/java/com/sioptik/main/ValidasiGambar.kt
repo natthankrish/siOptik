@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.sioptik.main.image_processor.ImageProcessor
 import com.sioptik.main.processing_result.FullScreenImageActivity
+import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Scalar
 
@@ -81,8 +82,8 @@ class ValidasiGambar : AppCompatActivity() {
         // SplittedImages
         val splittedImagesRects = imgProcessor.splitImageRects(originalMat)
         val splittedImages = imgProcessor.splitImage(originalMat)
-//        Log.i("TESTIMG", splittedImages.toString())
-        val rectContainer = mutableListOf<Rect>()
+        // Log.i("TESTIMG", splittedImages.toString())
+        val borderContainer = mutableListOf<Rect>()
 
         splittedImages.forEachIndexed { index, mat ->
             // Detect Borders
@@ -90,25 +91,43 @@ class ValidasiGambar : AppCompatActivity() {
             if (border == null){
                 border = imgProcessor.detectBorder(imgProcessor.convertToGray(mat), imgProcessor.convertToGray(borderImageSmall))
             }
-            Log.i("TEST BORDER", border.toString())
+            // Log.i("TEST BORDER", border.toString())
 
             if (border != null){
                 // Assume that it will only get 1
                 val currentRect = splittedImagesRects[index]
                 val adjustedBorder = Rect((currentRect.x + border.x), (currentRect.y + border.y), border.width, border.height)
-                rectContainer.add(adjustedBorder)
+                borderContainer.add(adjustedBorder)
             } else {
                 Log.i("TEST BORDER DETECTION", "Border Not Found")
             }
         }
-        val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, rectContainer, "B")
+        val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, borderContainer, "B")
 
         // Detect Boxes
         val boxes = imgProcessor.detectBoxes(processedMat)
         val resultImage = imgProcessor.visualizeContoursAndRectangles(borderedMat, boxes, "R")
-        Log.i("TEST", boxes.toString())
+        // Log.i("TEST", boxes.toString())
 
-        return imgProcessor.convertMatToBitmap(resultImage)
+        // Crop
+        var croppedResultImage = resultImage
+        if (borderContainer.size == 4){
+            val padding = 30;
+            val w = originalMat.width()
+            val h = originalMat.height()
+            Log.i("TEST W H", w.toString() + "||" +h.toString())
+            val tl_rect = borderContainer[0]
+            val br_rect = borderContainer[3]
+            Log.i("TEST TL BR", tl_rect.toString() + "||" + br_rect.toString())
+            var tlx = if (tl_rect.x - padding <= 0) 0 else tl_rect.x - padding
+            val tly = if (tl_rect.y - padding <= 0) 0 else tl_rect.y - padding
+            val brx = if (br_rect.x + (br_rect.width) + padding >= w) w else br_rect.x + (br_rect.width) + padding
+            val bry = if (br_rect.y + (br_rect.height) + padding >= h) h else br_rect.y + (br_rect.height) + padding
+            Log.i("TEST BOUNDARIES", tlx.toString() + "||" + tly.toString() + "||" + brx.toString() + "||" + bry.toString())
+
+            croppedResultImage = Mat(resultImage, Rect(tlx, tly, (brx - tlx), (bry - tly)))
+        }
+        return imgProcessor.convertMatToBitmap(croppedResultImage)
     }
 
 }
