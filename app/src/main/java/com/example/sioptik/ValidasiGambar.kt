@@ -67,7 +67,7 @@ class ValidasiGambar : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             showLoadingDialog()
             val processedImage = withContext(Dispatchers.IO) {
-                val module = python.getModule("apriltag")
+                val module = python.getModule("ocr")
                 val result = module.callAttr("main", imagePath)
                 result.toString()
             }
