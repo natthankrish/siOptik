@@ -20,7 +20,7 @@
         <FrameLayout
             android:id="@+id/imageValidationContainer"
             android:layout_width="320dp"
-            android:layout_height="512dp"
+            android:layout_height="480dp"
             android:layout_marginBottom="20dp"
             android:background="#232323"/>
 
