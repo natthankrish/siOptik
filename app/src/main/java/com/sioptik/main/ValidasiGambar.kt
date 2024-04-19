@@ -11,8 +11,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.sioptik.main.apriltag.AprilTagDetection
 import com.sioptik.main.apriltag.AprilTagNative
+import com.sioptik.main.camera_processor.CameraProcessor
 import com.sioptik.main.image_processor.ImageProcessor
 import com.sioptik.main.processing_result.FullScreenImageActivity
 import org.opencv.core.Mat
@@ -21,72 +23,92 @@ import org.opencv.core.Scalar
 import java.util.ArrayList
 
 class ValidasiGambar : AppCompatActivity() {
+    private lateinit var processedBitmap: Bitmap;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.validasi_gambar)
 
-        val frameLayout = findViewById<FrameLayout>(R.id.imageValidationContainer)
-        val apriltagTagView = findViewById<Button>(R.id.april_tag)
-        val imageUriString = intent.getStringExtra("image_uri")
-        AprilTagNative.apriltag_init("tag36h10", 2, 1.0, 0.0, 4)
-
-
-        if (imageUriString != null) {
-            val imageUri = Uri.parse(imageUriString)
-            try {
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
-                val processedBitmap = processImage(bitmap)
-                Log.i("DIMENSION", "SEBELUM CONVERT TO NV21");
-
-                val width = processedBitmap.width
-                val height = processedBitmap.height
-                val byteArray = getNV21(width, height/4, processedBitmap)
-                Log.i("DIMENSION", width.toString() + " " + height.toString());
-                val detections : ArrayList<AprilTagDetection> = AprilTagNative.apriltag_detect_yuv(byteArray, width, height)
-                Log.i("DIMENSION", "SETELAH APRILTAG");
-                if (detections.size == 0) {
-                    throw Exception()
-                }
-
-                val apriltag = detections[0]
-                apriltagTagView.text = apriltag.id.toString()
-
-                val imageView = ImageView(this).apply {
-                    layoutParams = FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT
-                    )
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                    setImageBitmap(processedBitmap)
-                }
-                frameLayout.addView(imageView)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(this, "Failed to load or process image", Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            Toast.makeText(this, "Image is NULL", Toast.LENGTH_SHORT).show()
-        }
-
         val retryButton = findViewById<Button>(R.id.retryButton)
         val sendButton = findViewById<Button>(R.id.sendButton)
+        val imageView: ImageView = findViewById(R.id.imageValidation)
 
         retryButton.setOnClickListener {
             val cameraIntent = Intent(this, Kamera::class.java)
             startActivity(cameraIntent)
         }
 
-        sendButton.setOnClickListener {
-            Intent(this, HasilPemrosesan::class.java).also { previewIntent ->
-                previewIntent.putExtra("image_uri", imageUriString)
-                startActivity(previewIntent)
+        val frameLayout = findViewById<FrameLayout>(R.id.imageValidationContainer)
+        val apriltagTagView = findViewById<Button>(R.id.april_tag)
+        val imageUriString = intent.getStringExtra("image_uri")
+        AprilTagNative.apriltag_init("tag36h10", 2, 1.0, 0.0, 4)
+
+        if (imageUriString != null) {
+            // Set Initial Image First
+            val imageUri = Uri.parse(imageUriString)
+            imageView.setImageURI(imageUri)
+            try {
+                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+
+                // Process  Image
+                val borders = processBorderDetection(bitmap)
+                processedBitmap = processImage(bitmap, borders)
+
+                // April Tag Process
+                val width = processedBitmap.width
+                val height = processedBitmap.height
+                val byteArray = getNV21(width, height/4, processedBitmap)
+                val detections : ArrayList<AprilTagDetection> = AprilTagNative.apriltag_detect_yuv(byteArray, width, height)
+
+                val apriltag = detections[0]
+                apriltagTagView.text = apriltag.id.toString()
+
+
+                imageView.setImageBitmap(processedBitmap)
+                // imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                // imageView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+
+                // Check if Borders and april tag are detected
+                if (borders.size != 4 || detections.size == 0){
+                    if (borders.size != 4){
+                        Toast.makeText(this, "Borders are invalid", Toast.LENGTH_SHORT).show()
+                    }
+                    if (detections.size == 0) {
+                        Toast.makeText(this, "April Tag is not detected", Toast.LENGTH_SHORT).show()
+                    }
+                    sendButton.isEnabled = false
+                } else {
+                    // Save Cropped Image
+                    val cameraProcessor = CameraProcessor()
+                    val tempFile = cameraProcessor.createTempFile(this, "CROPPED")
+                    cameraProcessor.saveBitmapToFile(processedBitmap, tempFile)
+
+                    val savedUri = FileProvider.getUriForFile(
+                        this,
+                        "com.sioptik.main.provider",
+                        tempFile
+                    )
+                    Log.i("TEST", savedUri.toString())
+
+                    sendButton.setOnClickListener {
+                        Intent(this, HasilPemrosesan::class.java).also { previewIntent ->
+                            previewIntent.putExtra("image_uri", savedUri)
+                            startActivity(previewIntent)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "Failed to load or process image", Toast.LENGTH_SHORT).show()
+                sendButton.isEnabled = false
             }
+        } else {
+            Toast.makeText(this, "Image is NULL", Toast.LENGTH_SHORT).show()
         }
+
     }
 
-    private fun processImage(bitmap: Bitmap): Bitmap {
+    private fun processBorderDetection(bitmap: Bitmap) : List<Rect> {
         val imgProcessor = ImageProcessor()
         val borderImageDrawable = R.drawable.border_smaller
         val borderImageSmallDrawable = R.drawable.border_smallest
@@ -95,12 +117,10 @@ class ValidasiGambar : AppCompatActivity() {
 
         // Initial Mat
         val originalMat = imgProcessor.convertBitmapToMat(bitmap)
-        val processedMat = imgProcessor.preprocessImage(originalMat)
 
         // SplittedImages
         val splittedImagesRects = imgProcessor.splitImageRects(originalMat)
         val splittedImages = imgProcessor.splitImage(originalMat)
-        // Log.i("TESTIMG", splittedImages.toString())
         val borderContainer = mutableListOf<Rect>()
 
         splittedImages.forEachIndexed { index, mat ->
@@ -109,7 +129,6 @@ class ValidasiGambar : AppCompatActivity() {
             if (border == null){
                 border = imgProcessor.detectBorder(imgProcessor.convertToGray(mat), imgProcessor.convertToGray(borderImageSmall))
             }
-            // Log.i("TEST BORDER", border.toString())
 
             if (border != null){
                 // Assume that it will only get 1
@@ -120,12 +139,20 @@ class ValidasiGambar : AppCompatActivity() {
                 Log.i("TEST BORDER DETECTION", "Border Not Found")
             }
         }
+        return borderContainer
+    }
+
+    private fun processImage(bitmap: Bitmap, borderContainer : List<Rect>): Bitmap {
+        val imgProcessor = ImageProcessor()
+
+        // Initial Mat
+        val originalMat = imgProcessor.convertBitmapToMat(bitmap)
+        val processedMat = imgProcessor.preprocessImage(originalMat)
         val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, borderContainer, "B")
 
         // Detect Boxes
         val boxes = imgProcessor.detectBoxes(processedMat)
         val resultImage = imgProcessor.visualizeContoursAndRectangles(borderedMat, boxes, "R")
-        // Log.i("TEST", boxes.toString())
 
         // Crop
         var croppedResultImage = resultImage
@@ -133,12 +160,10 @@ class ValidasiGambar : AppCompatActivity() {
             val padding = 30;
             val w = originalMat.width()
             val h = originalMat.height()
-//            Log.i("TEST W H", w.toString() + "||" +h.toString())
             val tl_rect = borderContainer[0]
             val tr_rect = borderContainer[1]
             val bl_rect = borderContainer[2]
             val br_rect = borderContainer[3]
-//            Log.i("TEST TL BR", tl_rect.toString() + "||" + br_rect.toString())
 
             // Adjustment By Checking Four corners
             // Four corners might be difference in X and Y
@@ -158,6 +183,7 @@ class ValidasiGambar : AppCompatActivity() {
         }
         return imgProcessor.convertMatToBitmap(croppedResultImage)
     }
+
 
     fun getNV21(inputWidth: Int, inputHeight: Int, scaled: Bitmap): ByteArray? {
         var scaled = scaled
@@ -208,8 +234,7 @@ class ValidasiGambar : AppCompatActivity() {
                     index++
                 }
             }
-        } catch (e: IndexOutOfBoundsException) {
-        }
+        } catch (e: IndexOutOfBoundsException) { }
     }
 
 }

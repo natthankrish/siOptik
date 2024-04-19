@@ -65,7 +65,6 @@ class ImageProcessor {
         val resultBitmap =
             Bitmap.createBitmap(processedMat.cols(), processedMat.rows(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(processedMat, resultBitmap)
-        Log.i("TEST", resultBitmap.width.toString() + "|| " + resultBitmap.height.toString())
         return resultBitmap
     }
 
@@ -96,7 +95,6 @@ class ImageProcessor {
                 val rect = Imgproc.boundingRect(MatOfPoint(*contourPoly.toArray()))
                 val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
                 if (aspectRatio >= (1 - aspect_threshold) && aspectRatio <= (1 + aspect_threshold) && rect.width > width_threshold) {
-//                    Log.i ("BOX", rect.toString() + "||" + rect.width.toString() + "||" + rect.height.toString())
                     squares.add(rect)
                 }
             }
@@ -159,7 +157,6 @@ class ImageProcessor {
 
             // Draw all detected rectangles
             rectangles.forEach { rect ->
-//                Log.i("TEST", rect.tl().toString() + "||" + rect.br().toString())
                 Imgproc.rectangle(
                     visualizedImage,
                     rect.tl(),
@@ -169,7 +166,6 @@ class ImageProcessor {
                 ) // Draw Rectangle
             }
 
-            Log.i("TEST", "HEHE" + visualizedImage.toString())
             return visualizedImage
         } else {
             return processedMat
@@ -187,28 +183,6 @@ class ImageProcessor {
 
         return mat
     }
-
-//    fun detectBorders(imageMat: Mat, borderImage: Mat): List<Rect> {
-//        val result = Mat()
-//        Imgproc.matchTemplate(imageMat, borderImage, result, Imgproc.TM_CCOEFF_NORMED)
-//        Core.normalize(result, result, 0.0, 1.0, Core.NORM_MINMAX, -1, Mat())
-//
-//        val threshold = 0.8 // Adjust threshold as needed
-//        val locations = Mat()
-//        Core.findNonZero(result, locations)
-//        Log.i("TEST", locations.toString())
-//
-//        val rects = mutableListOf<Rect>()
-//        for (loc in 0 until locations.rows()) {
-//            val matchLoc = locations[0, loc]
-//            if (matchLoc != null) {
-//                val matchLocPt = Point(matchLoc[0], matchLoc[1])
-//                val rect = Rect(matchLocPt, Size(borderImage.cols().toDouble(), borderImage.rows().toDouble()))
-//                rects.add(rect)
-//            }
-//        }
-//        return rects
-//    }
 
     fun splitImage (image:Mat) : List<Mat> {
         // Split itu n x n parts
