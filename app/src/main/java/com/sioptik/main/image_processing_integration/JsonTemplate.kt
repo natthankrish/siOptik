@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder
 class JsonTemplate(
     var fieldNames: Array<String>,
 ) {
-    private val dictionary =  HashMap<String, Int>()
+    private val dictionary =  hashMapOf<String, Int>()
     private val gsonBuilder = GsonBuilder().apply {
         setPrettyPrinting()
     };
