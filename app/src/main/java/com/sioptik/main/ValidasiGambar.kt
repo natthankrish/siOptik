@@ -55,25 +55,21 @@ class ValidasiGambar : AppCompatActivity() {
                 processedBitmap = processImage(bitmap, borders)
 
                 // April Tag Process
-                val width = processedBitmap.width
-                val height = processedBitmap.height
-                val byteArray = getNV21(width, height/4, processedBitmap)
-                val detections : ArrayList<AprilTagDetection> = AprilTagNative.apriltag_detect_yuv(byteArray, width, height)
-
-                val apriltag = detections[0]
-                apriltagTagView.text = apriltag.id.toString()
-
+                val apriltag = processAprilTagDetection(processedBitmap)
+                if (apriltag != null){
+                    apriltagTagView.text = apriltag.id.toString()
+                }
 
                 imageView.setImageBitmap(processedBitmap)
                 // imageView.scaleType = ImageView.ScaleType.CENTER_CROP
                 // imageView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
                 // Check if Borders and april tag are detected
-                if (borders.size != 4 || detections.size == 0){
+                if (borders.size != 4 || apriltag == null){
                     if (borders.size != 4){
                         Toast.makeText(this, "Borders are invalid", Toast.LENGTH_SHORT).show()
                     }
-                    if (detections.size == 0) {
+                    if (apriltag == null) {
                         Toast.makeText(this, "April Tag is not detected", Toast.LENGTH_SHORT).show()
                     }
                     sendButton.isEnabled = false
@@ -181,6 +177,20 @@ class ValidasiGambar : AppCompatActivity() {
             croppedResultImage = Mat(resultImage, Rect(tlx, tly, (brx - tlx), (bry - tly)))
         }
         return imgProcessor.convertMatToBitmap(croppedResultImage)
+    }
+
+    private fun processAprilTagDetection (bitmap: Bitmap) : AprilTagDetection? {
+        try {
+            val width = bitmap.width
+            val height = bitmap.height
+            val byteArray = getNV21(width, height/4, bitmap)
+            val detections : ArrayList<AprilTagDetection> = AprilTagNative.apriltag_detect_yuv(byteArray, width, height)
+
+            val apriltag = detections[0]
+            return apriltag
+        } catch (e: Exception){
+            return null
+        }
     }
 
 
