@@ -22,6 +22,8 @@ class HasilPemrosesan : AppCompatActivity() {
 
         val imageView: ImageView = findViewById(R.id.processed_image)
 
+        Log.i("TEST HASIL", intent.getStringExtra("image_uri").toString())
+
         val imageUriString = intent.getStringExtra("image_uri") ?: return
         val imageUri = Uri.parse(imageUriString)
 

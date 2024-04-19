@@ -88,11 +88,10 @@ class ValidasiGambar : AppCompatActivity() {
                         "com.sioptik.main.provider",
                         tempFile
                     )
-                    Log.i("TEST", savedUri.toString())
 
                     sendButton.setOnClickListener {
                         Intent(this, HasilPemrosesan::class.java).also { previewIntent ->
-                            previewIntent.putExtra("image_uri", savedUri)
+                            previewIntent.putExtra("image_uri", savedUri.toString())
                             startActivity(previewIntent)
                         }
                     }
