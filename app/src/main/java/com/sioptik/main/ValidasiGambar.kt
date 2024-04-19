@@ -52,7 +52,7 @@ class ValidasiGambar : AppCompatActivity() {
 
                 // Process  Image
                 val borders = processBorderDetection(bitmap)
-                processedBitmap = processImage(bitmap, borders)
+                processedBitmap = processAndCropImage(bitmap, borders)
 
                 // April Tag Process
                 val apriltag = processAprilTagDetection(processedBitmap)
@@ -137,17 +137,12 @@ class ValidasiGambar : AppCompatActivity() {
         return borderContainer
     }
 
-    private fun processImage(bitmap: Bitmap, borderContainer : List<Rect>): Bitmap {
+    private fun processAndCropImage(bitmap: Bitmap, borderContainer : List<Rect>): Bitmap {
         val imgProcessor = ImageProcessor()
 
         // Initial Mat
         val originalMat = imgProcessor.convertBitmapToMat(bitmap)
-        val processedMat = imgProcessor.preprocessImage(originalMat)
-        val borderedMat =imgProcessor.visualizeContoursAndRectangles(originalMat, borderContainer, "B")
-
-        // Detect Boxes
-        val boxes = imgProcessor.detectBoxes(processedMat)
-        val resultImage = imgProcessor.visualizeContoursAndRectangles(borderedMat, boxes, "R")
+        val resultImage = imgProcessor.visualizeContoursAndRectangles(originalMat, borderContainer, Scalar(0.0, 255.0, 255.0), false,6) // Comment out this line to see processed image
 
         // Crop
         var croppedResultImage = resultImage
