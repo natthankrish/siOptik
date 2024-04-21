@@ -8,7 +8,7 @@ import java.util.Date
 data class RiwayatEntity (
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "date") val date: Date,
-    @ColumnInfo(name = "json") val json: String,
+    @ColumnInfo(name = "json") val jsonFileUri: String,
     @ColumnInfo(name = "originalImageUri") val originalImageUri: String,
     @ColumnInfo(name = "annotatedImageUri") val annotatedImageUri: String
 )

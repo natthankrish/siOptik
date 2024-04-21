@@ -31,13 +31,14 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -54,6 +55,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     externalNativeBuild {
         cmake {
             path = file("CMakeLists.txt")
@@ -95,6 +97,7 @@ dependencies {
 
     // OpenCV
     implementation(project(":opencv"))
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
 
     val room_version = "2.6.1"
