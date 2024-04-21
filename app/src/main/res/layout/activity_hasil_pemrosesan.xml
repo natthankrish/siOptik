@@ -41,10 +41,11 @@
 
                 <FrameLayout
                     android:id="@+id/processed_image_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="360dp"
+                    android:layout_width="320dp"
+                    android:layout_height="500dp"
                     android:layout_weight="1"
-                    android:background="#e0e0e0">
+                    android:background="#e0e0e0"
+                    android:layout_gravity="center">
 
                     <ImageView
                         android:id="@+id/processed_image"

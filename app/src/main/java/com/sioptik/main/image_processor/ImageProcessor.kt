@@ -24,7 +24,9 @@ class ImageProcessor {
         val grayMat = convertToGray(srcMat)
         val blurredMat = applyGaussianBlur(grayMat)
         val thresholdMat = applyAdaptiveThreshold(blurredMat)
-        return applyMorphologicalOperations(thresholdMat)
+        val morphMat = applyMorphologicalOperations(thresholdMat)
+        val cannyMat = applyCannyDetection(morphMat)
+        return cannyMat
     }
 
     fun convertToGray(colorMat: Mat): Mat {
@@ -35,7 +37,7 @@ class ImageProcessor {
 
     private fun applyGaussianBlur(grayMat: Mat): Mat {
         val blurredMat = Mat()
-        Imgproc.GaussianBlur(grayMat, blurredMat, Size(5.0, 5.0), 0.0)
+        Imgproc.GaussianBlur(grayMat, blurredMat, Size(3.0, 3.0), 0.0)
         return blurredMat
     }
 
@@ -55,17 +57,35 @@ class ImageProcessor {
 
     private fun applyMorphologicalOperations(thresholdMat: Mat): Mat {
         val morphMat = Mat()
-        val element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(3.0, 3.0))
-        Imgproc.dilate(thresholdMat, morphMat, element)
+        val element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(2.0, 2.0))
+        Imgproc.morphologyEx(
+            thresholdMat,
+            morphMat,
+            Imgproc.MORPH_CLOSE,
+            element
+        ) // fill holes
+        Imgproc.morphologyEx(
+            morphMat,
+            morphMat,
+            Imgproc.MORPH_OPEN,
+            element
+        ) //remove noise
+        Imgproc.dilate(morphMat, morphMat, element)
         Imgproc.erode(morphMat, morphMat, element)
         return morphMat
+    }
+
+    private fun applyCannyDetection (mat: Mat): Mat {
+        val edges = Mat(mat.rows(), mat.cols(), mat.type())
+//        Imgproc.Canny(mat, edges, 75.0,  200.0)
+        Imgproc.Canny(mat, edges, 1000.0,  1100.0) // Ini threshold kinda trial and error, cari yang bagus
+        return edges
     }
 
     fun convertMatToBitmap(processedMat: Mat): Bitmap {
         val resultBitmap =
             Bitmap.createBitmap(processedMat.cols(), processedMat.rows(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(processedMat, resultBitmap)
-        Log.i("TEST", resultBitmap.width.toString() + "|| " + resultBitmap.height.toString())
         return resultBitmap
     }
 
@@ -87,39 +107,36 @@ class ImageProcessor {
         )
         val squares = mutableListOf<Rect>()
         val aspect_threshold = 0.1
-        val width_threshold = 50
+        val width_lower_threshold = 20
+        val width_upper_threshold = 60
+
+//        Log.i ("TEST CONTOURS", contours.toString())
 
         contours.forEach {
-            val contourPoly = MatOfPoint2f()
-            Imgproc.approxPolyDP(MatOfPoint2f(*it.toArray()), contourPoly, 3.0, true)
-            if (contourPoly.total() == 4L) {
-                val rect = Imgproc.boundingRect(MatOfPoint(*contourPoly.toArray()))
+            // Minimum size allowed for consideration
+            val approxCurve = MatOfPoint2f()
+            val contour2f = MatOfPoint2f(*it.toArray())
+
+            // Processing on mMop2f1 which is in type of MatOfPoint2f
+            val approxDistance = Imgproc.arcLength(contour2f, true) * 0.02
+//            val approxDistance = 3.0
+            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true)
+
+            val numberVertices = approxCurve.total().toInt()
+
+            if (numberVertices in 4..6) {
+                Log.i("TEST APPROX", approxCurve.toString())
+                val rect = Imgproc.boundingRect(MatOfPoint(*approxCurve.toArray()))
                 val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
-                if (aspectRatio >= (1 - aspect_threshold) && aspectRatio <= (1 + aspect_threshold) && rect.width > width_threshold) {
-//                    Log.i ("BOX", rect.toString() + "||" + rect.width.toString() + "||" + rect.height.toString())
+                if (aspectRatio >= (1 - aspect_threshold) && aspectRatio <= (1 + aspect_threshold) && rect.width >= width_lower_threshold && rect.width <= width_upper_threshold) {
+                    Log.i("TEST APPROX SELECTED", approxCurve.toString())
                     squares.add(rect)
                 }
             }
+
         }
         return squares
     }
-
-//    fun detectRectangles(processedMat: Mat): List<Rect> {
-//        val contours = ArrayList<MatOfPoint>()
-//        val hierarchy = Mat()
-//        Imgproc.findContours(processedMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-//        val rectangles = mutableListOf<Rect>()
-//
-//        contours.forEach {
-//            val contourPoly = MatOfPoint2f()
-//            Imgproc.approxPolyDP(MatOfPoint2f(*it.toArray()), contourPoly, 3.0, true)
-//            if (contourPoly.total() == 4L) {
-//                val rect = Imgproc.boundingRect(MatOfPoint(*contourPoly.toArray()))
-//                rectangles.add(rect)
-//            }
-//        }
-//        return rectangles
-//    }
 
     fun detectColorSpace(mat: Mat): String {
         val numChannels = mat.channels()
@@ -136,7 +153,9 @@ class ImageProcessor {
     fun visualizeContoursAndRectangles(
         processedMat: Mat,
         rectangles: List<Rect>,
-        color: String
+        colorScale: Scalar,
+        isBoxes: Boolean,
+        width: Int
     ): Mat {
         if (!rectangles.isEmpty()) {
             // Create a copy of the processed image to draw on
@@ -147,29 +166,21 @@ class ImageProcessor {
                 Imgproc.cvtColor(visualizedImage, visualizedImage, Imgproc.COLOR_GRAY2BGR)
             }
 
-
-            var colorScale = Scalar(0.0, 0.0, 0.0)
-            if (color == "G") {
-                colorScale = Scalar(0.0, 255.0, 0.0)
-            } else if (color == "R") {
-                colorScale = Scalar(255.0, 0.0, 0.0)
-            } else if (color == "B") {
-                colorScale = Scalar(0.0, 0.0, 255.0)
-            }
-
             // Draw all detected rectangles
             rectangles.forEach { rect ->
-//                Log.i("TEST", rect.tl().toString() + "||" + rect.br().toString())
                 Imgproc.rectangle(
                     visualizedImage,
                     rect.tl(),
                     rect.br(),
                     colorScale,
-                    6
+                    width
                 ) // Draw Rectangle
+
+                if(isBoxes){
+                    Imgproc.putText(visualizedImage, "X", rect.tl(), Imgproc.FONT_HERSHEY_TRIPLEX,1.0, colorScale)
+                }
             }
 
-            Log.i("TEST", "HEHE" + visualizedImage.toString())
             return visualizedImage
         } else {
             return processedMat
@@ -187,28 +198,6 @@ class ImageProcessor {
 
         return mat
     }
-
-//    fun detectBorders(imageMat: Mat, borderImage: Mat): List<Rect> {
-//        val result = Mat()
-//        Imgproc.matchTemplate(imageMat, borderImage, result, Imgproc.TM_CCOEFF_NORMED)
-//        Core.normalize(result, result, 0.0, 1.0, Core.NORM_MINMAX, -1, Mat())
-//
-//        val threshold = 0.8 // Adjust threshold as needed
-//        val locations = Mat()
-//        Core.findNonZero(result, locations)
-//        Log.i("TEST", locations.toString())
-//
-//        val rects = mutableListOf<Rect>()
-//        for (loc in 0 until locations.rows()) {
-//            val matchLoc = locations[0, loc]
-//            if (matchLoc != null) {
-//                val matchLocPt = Point(matchLoc[0], matchLoc[1])
-//                val rect = Rect(matchLocPt, Size(borderImage.cols().toDouble(), borderImage.rows().toDouble()))
-//                rects.add(rect)
-//            }
-//        }
-//        return rects
-//    }
 
     fun splitImage (image:Mat) : List<Mat> {
         // Split itu n x n parts

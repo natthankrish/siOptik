@@ -14,15 +14,20 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             style="@style/GeneralButton"
-
             android:text="UNDEFINED" />
 
         <FrameLayout
             android:id="@+id/imageValidationContainer"
             android:layout_width="320dp"
-            android:layout_height="512dp"
+            android:layout_height="500dp"
             android:layout_marginBottom="20dp"
-            android:background="#232323"/>
+            android:background="#232323">
+
+            <ImageView
+                android:id="@+id/imageValidation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
