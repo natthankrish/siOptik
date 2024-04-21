@@ -77,8 +77,8 @@ class ImageProcessor {
 
     private fun applyCannyDetection (mat: Mat): Mat {
         val edges = Mat(mat.rows(), mat.cols(), mat.type())
-//        Imgproc.Canny(mat, edges, 500.0,  1000.0)
-        Imgproc.Canny(mat, edges, 1000.0,  1200.0) // Ini threshold kinda trial and error, cari yang bagus
+//        Imgproc.Canny(mat, edges, 75.0,  200.0)
+        Imgproc.Canny(mat, edges, 1000.0,  1100.0) // Ini threshold kinda trial and error, cari yang bagus
         return edges
     }
 
