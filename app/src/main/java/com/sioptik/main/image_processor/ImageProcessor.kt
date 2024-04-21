@@ -106,11 +106,6 @@ class ImageProcessor {
             Imgproc.CHAIN_APPROX_SIMPLE
         )
         val squares = mutableListOf<Rect>()
-        val aspect_threshold = 0.1
-        val width_lower_threshold = 20
-        val width_upper_threshold = 60
-
-//        Log.i ("TEST CONTOURS", contours.toString())
 
         contours.forEach {
             // Minimum size allowed for consideration
@@ -127,8 +122,7 @@ class ImageProcessor {
             if (numberVertices in 4..6) {
                 Log.i("TEST APPROX", approxCurve.toString())
                 val rect = Imgproc.boundingRect(MatOfPoint(*approxCurve.toArray()))
-                val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
-                if (aspectRatio >= (1 - aspect_threshold) && aspectRatio <= (1 + aspect_threshold) && rect.width >= width_lower_threshold && rect.width <= width_upper_threshold) {
+                if (checkBoxesSelection(processedMat, rect)) {
                     Log.i("TEST APPROX SELECTED", approxCurve.toString())
                     squares.add(rect)
                 }
@@ -136,6 +130,31 @@ class ImageProcessor {
 
         }
         return squares
+    }
+
+    fun checkBoxesSelection(mat: Mat, rect: Rect) : Boolean{
+        val aspect_threshold = 0.1
+        val width_lower_threshold = 20
+        val width_upper_threshold = 60
+        val height_mat_threshold_multiplier = 0.1
+
+        val h = mat.height()
+        val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
+
+        // Check one by one condition
+        // Check aspect ratio -> To Avoid Rectangle
+        if (aspectRatio <= (1 - aspect_threshold) || aspectRatio >= (1 + aspect_threshold)){
+            return false
+        }
+        // Check size -> To avoid Noises and Big Box
+        if (rect.width <= width_lower_threshold || rect.width >= width_upper_threshold){
+            return false
+        }
+        // Check location -> To avoid April Tag and Borders (Contents are almost always in the middle level of height)
+        if (rect.y < h * height_mat_threshold_multiplier || rect.y > h - (h * height_mat_threshold_multiplier)){
+            return false
+        }
+        return true
     }
 
     fun detectColorSpace(mat: Mat): String {
@@ -225,8 +244,8 @@ class ImageProcessor {
         val n = 3
         val w = image.width()
         val h = image.height()
-        val part_w = (w / n).toInt()
-        val part_h = (h / n).toInt()
+        val part_w = (w / n)
+        val part_h = (h / n)
         val rects = mutableListOf<Rect>()
 
         val tl : Rect =  Rect(0,0, part_w, part_h)        // val tl_rect : Rect
