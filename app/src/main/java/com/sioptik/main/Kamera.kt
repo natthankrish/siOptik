@@ -1,10 +1,12 @@
 package com.sioptik.main
 
 import android.Manifest
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,9 +24,14 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.sioptik.main.camera_processor.CameraProcessor
 import com.sioptik.main.databinding.KameraBinding
+import com.sioptik.main.image_processor.ImageProcessor
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -33,6 +40,7 @@ import java.util.concurrent.Executors
 
 class Kamera : AppCompatActivity() {
     private lateinit var viewBinding: KameraBinding
+    private val MAX_WIDTH = 1600;
 
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -42,32 +50,20 @@ class Kamera : AppCompatActivity() {
         viewBinding = KameraBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
         } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
+
         viewBinding.captureButton.setOnClickListener { takePhoto() }
-        viewBinding.pickImage.setOnClickListener{pickImageFromGallery()}
+        viewBinding.pickImage.setOnClickListener { pickImageFromGallery() }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
-    private fun pickImageFromGallery(){
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type="image/*"
-        startActivityForResult(intent, IMAGE_REQUEST_CODE )
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK){
-            data?.data?.let { uri ->
-                processImageUri(uri)
-            } ?: Toast.makeText(this, "Error: No image selected!", Toast.LENGTH_LONG).show()
-        }
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(
+            baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -86,70 +82,6 @@ class Kamera : AppCompatActivity() {
         }
     }
 
-
-    private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageCapturedCallback() {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    super.onCaptureSuccess(image)
-                    // Change the image proxy to bit map
-                    val bitmap = imageProxyToBitmap(image)
-                    image.close()
-
-                    val tempFile = createTempFile()
-                    saveBitmapToFile(bitmap, tempFile)
-
-                    val savedUri = FileProvider.getUriForFile(
-                        this@Kamera,
-                        "com.sioptik.main.provider",
-                        tempFile
-                    )
-
-                    Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
-                        previewIntent.putExtra("image_uri", savedUri.toString())
-                        startActivity(previewIntent)
-                    }
-                }
-
-            }
-        )
-    }
-
-    private fun imageProxyToBitmap(image: ImageProxy): Bitmap? {
-        val planeProxy = image.planes[0]
-        val buffer: ByteBuffer = planeProxy.buffer
-        val bytes = ByteArray(buffer.remaining())
-        buffer.get(bytes)
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    }
-
-    private fun saveBitmapToFile(bitmap: Bitmap?, file: File) {
-        FileOutputStream(file).use { out ->
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        }
-    }
-
-    private fun createTempFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
-        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        return File.createTempFile(
-            "JPEG_${timeStamp}_",
-            ".jpg",
-            storageDir
-        ).apply {
-            deleteOnExit()
-        }
-    }
     private fun startCamera() {
         val viewFinder = findViewById<PreviewView>(R.id.viewFinder)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -184,21 +116,89 @@ class Kamera : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
-    private fun processImageUri(savedUri: Uri) {
-        Intent(this@Kamera, HasilPemrosesan::class.java).also { previewIntent ->
-            previewIntent.putExtra("image_uri", savedUri.toString())
-            startActivity(previewIntent)
+
+    private fun pickImageFromGallery(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type="image/*"
+        startActivityForResult(intent, IMAGE_REQUEST_CODE )
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val cameraProcessor = CameraProcessor()
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK){
+            data?.data?.let { uri ->
+
+                val isTooLarge = cameraProcessor.isImageTooWide(contentResolver, uri, MAX_WIDTH)
+                if (isTooLarge){
+                    Toast.makeText(this, "The Image is scaled down", Toast.LENGTH_LONG).show()
+                    val scaledBitmap = cameraProcessor.scaleDownImage(contentResolver, uri, MAX_WIDTH)
+
+                    val tempFile = cameraProcessor.createTempFile(this@Kamera, "GALLERY")
+                    cameraProcessor.saveBitmapToFile(scaledBitmap, tempFile)
+
+                    val savedUri = FileProvider.getUriForFile(
+                        this@Kamera,
+                        "com.sioptik.main.provider",
+                        tempFile
+                    )
+                    processImageUri(savedUri)
+
+                } else {
+                    processImageUri(uri)
+                }
+
+            } ?: Toast.makeText(this, "Error: No image selected!", Toast.LENGTH_LONG).show()
         }
     }
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+
+
+    private fun takePhoto() {
+        val imageCapture = imageCapture ?: return
+        val cameraProcessor = CameraProcessor()
+
+        imageCapture.takePicture(
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageCapturedCallback() {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
+
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    super.onCaptureSuccess(image)
+                    val bitmap = cameraProcessor.imageProxyToBitmap(image)
+                    val scaledBitmap = cameraProcessor.scaleDownBitmap(bitmap!!, MAX_WIDTH)
+
+                    image.close()
+
+                    val tempFile = cameraProcessor.createTempFile(this@Kamera, "CAMERA")
+                    cameraProcessor.saveBitmapToFile(scaledBitmap, tempFile)
+
+                    val savedUri = FileProvider.getUriForFile(
+                        this@Kamera,
+                        "com.sioptik.main.provider",
+                        tempFile
+                    )
+
+                    processImageUri(savedUri)
+                }
+            }
+        )
+    }
+
+    private fun processImageUri(imageUri: Uri) {
+        Intent(this@Kamera, ValidasiGambar::class.java).also { previewIntent ->
+            previewIntent.putExtra("image_uri", imageUri.toString())
+            startActivity(previewIntent)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
+
 
     companion object {
         private const val TAG = "CameraXApp"
