@@ -16,6 +16,8 @@ import com.sioptik.main.processing_result.DynamicContentFragment
 import com.sioptik.main.processing_result.FullScreenImageActivity
 import com.sioptik.main.processing_result.SharedViewModel
 import com.sioptik.main.processing_result.json_parser.parser.JsonParser
+import org.opencv.core.Mat
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 
 class HasilPemrosesan : AppCompatActivity() {
@@ -26,9 +28,6 @@ class HasilPemrosesan : AppCompatActivity() {
         setContentView(R.layout.activity_hasil_pemrosesan)
 
         val imageView: ImageView = findViewById(R.id.processed_image)
-
-        Log.i("TEST HASIL", intent.getStringExtra("image_uri").toString())
-
         val imageUriString = intent.getStringExtra("image_uri")
 
 
@@ -44,7 +43,14 @@ class HasilPemrosesan : AppCompatActivity() {
 
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
-                val processedBitmap = processImage(bitmap)
+
+                // Process Image
+                val detectedBoxes = detectBoxes(bitmap)
+                val processedBitmap = processImage(bitmap, detectedBoxes)
+
+                // Crop Detected Boxes for OCR
+                val croppedBoxes = cropBoxes(bitmap, detectedBoxes)
+//                Log.i("TEST CROPPED BOXES", croppedBoxes.toString())
 
                 imageView.setImageBitmap(processedBitmap)
             } catch (e: Exception) {
@@ -89,17 +95,37 @@ class HasilPemrosesan : AppCompatActivity() {
     }
 }
 
-private fun processImage (bitmap: Bitmap) : Bitmap {
+private fun processImage (bitmap: Bitmap, boxes: List<Rect>) : Bitmap {
     val imgProcessor = ImageProcessor()
+    // Initial Mat
+    val originalMat = imgProcessor.convertBitmapToMat(bitmap)
+    val processedMat = imgProcessor.preprocessImage(originalMat) // Maybe will be used but better save it first
+    // Contour Boxes
+    val resultImage = imgProcessor.visualizeContoursAndRectangles(processedMat, boxes, Scalar(255.0, .0, 0.0), true, 2)
+    return imgProcessor.convertMatToBitmap(resultImage)
+}
 
+private fun cropBoxes(bitmap: Bitmap, boxes: List<Rect>) : List<Bitmap> {
+    val imgProcessor = ImageProcessor()
+    // Initial Mat
+    val originalMat = imgProcessor.convertBitmapToMat(bitmap)
+    val croppedImages = mutableListOf<Bitmap>()
+    boxes.forEach{box ->
+        val newMat : Mat = Mat(originalMat, box)
+        val newBitmap = imgProcessor.convertMatToBitmap(newMat)
+        croppedImages.add(newBitmap)
+    }
+    return croppedImages
+}
+
+
+private fun detectBoxes (bitmap: Bitmap) : List<Rect> {
+    val imgProcessor = ImageProcessor()
     // Initial Mat
     val originalMat = imgProcessor.convertBitmapToMat(bitmap)
     val processedMat = imgProcessor.preprocessImage(originalMat)
-
     // Detect Boxes
     val boxes = imgProcessor.detectBoxes(processedMat)
-    val resultImage = imgProcessor.visualizeContoursAndRectangles(processedMat, boxes, Scalar(255.0, 0.0, 0.0), true, 2) // Comment out this line to see processed image
-
-    return imgProcessor.convertMatToBitmap(resultImage)
+    return boxes
 }
 
