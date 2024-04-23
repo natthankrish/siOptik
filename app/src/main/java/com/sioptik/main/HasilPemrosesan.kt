@@ -16,20 +16,30 @@ import com.sioptik.main.processing_result.DynamicContentFragment
 import com.sioptik.main.processing_result.FullScreenImageActivity
 import com.sioptik.main.processing_result.SharedViewModel
 import com.sioptik.main.processing_result.json_parser.parser.JsonParser
+import com.sioptik.main.tesseract.TesseractHelper
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Scalar
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class HasilPemrosesan : AppCompatActivity() {
+    private val lang = "ind"
     private val viewModel: SharedViewModel by viewModels()
+    private lateinit var tesseractHelper: TesseractHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hasil_pemrosesan)
 
+        prepareTessData()
+        val dataPath = filesDir.absolutePath
+        tesseractHelper = TesseractHelper()
+        tesseractHelper.initTessBaseApi(dataPath, lang)
+
         val imageView: ImageView = findViewById(R.id.processed_image)
         val imageUriString = intent.getStringExtra("image_uri")
-
 
         if (imageUriString != null){
             val imageUri = Uri.parse(imageUriString)
@@ -50,7 +60,7 @@ class HasilPemrosesan : AppCompatActivity() {
 
                 // Crop Detected Boxes for OCR
                 val croppedBoxes = cropBoxes(bitmap, detectedBoxes)
-//                Log.i("TEST CROPPED BOXES", croppedBoxes.toString())
+                processBoxes(croppedBoxes)
 
                 imageView.setImageBitmap(processedBitmap)
             } catch (e: Exception) {
@@ -93,6 +103,52 @@ class HasilPemrosesan : AppCompatActivity() {
             replace(R.id.fragmentContainerView, DynamicContentFragment())
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tesseractHelper.destroy()
+    }
+
+    private fun processBoxes(croppedBoxed: List<Bitmap>){
+        croppedBoxed.forEach {
+            croppedBitmap ->
+            val text = tesseractHelper.recognizeDigits(croppedBitmap)
+            if (text != null) {
+                Log.d("OCR Result", text)
+            }
+        }
+    }
+
+
+    private fun prepareTessData() {
+        // Path to the internal directory
+        val tessdataPath = File(filesDir, "tessdata")
+
+        if (!tessdataPath.exists()) {
+            if (!tessdataPath.mkdirs()) {
+                Log.e("Tesseract", "Failed to create directory: ${tessdataPath.absolutePath}")
+                return
+            } else {
+                Log.i("Tesseract", "Created directory: ${tessdataPath.absolutePath}")
+            }
+        }
+
+        val tessdataFile = File(tessdataPath, "$lang.traineddata")
+        if (!tessdataFile.exists()) {
+            try {
+                assets.open("tessdata/$lang.traineddata").use { inputStream ->
+                    FileOutputStream(tessdataFile).use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                Log.i("Tesseract", "Copied '$lang.traineddata' to tessdata")
+            } catch (e: IOException) {
+                Log.e("Tesseract", "Unable to copy '$lang.traineddata': ", e)
+            }
+        } else {
+            Log.i("Tesseract", "'$lang.traineddata' already exists no need to copy")
+        }
+    }
 }
 
 private fun processImage (bitmap: Bitmap, boxes: List<Rect>) : Bitmap {
@@ -128,4 +184,3 @@ private fun detectBoxes (bitmap: Bitmap) : List<Rect> {
     val boxes = imgProcessor.detectBoxes(processedMat)
     return boxes
 }
-
