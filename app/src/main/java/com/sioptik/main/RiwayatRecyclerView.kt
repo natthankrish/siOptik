@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sioptik.main.riwayat_repository.RiwayatEntity
 
-class RiwayatRecyclerViewAdapter(private var riwayatList: List<RiwayatEntity>) :
+class RiwayatRecyclerViewAdapter(
+    private var riwayatList: List<RiwayatEntity>,
+    private val interactionListener: RiwayatInteractionListener
+) :
     RecyclerView.Adapter<RiwayatRecyclerViewAdapter.ModelViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,12 +44,22 @@ class RiwayatRecyclerViewAdapter(private var riwayatList: List<RiwayatEntity>) :
         var dateTextView: TextView
         var apriltagIdTextView: TextView
         var timeTextView: TextView
+        var hapusText: TextView
 
         init {
             cardView = itemView.findViewById(R.id.riwayat_card)
             dateTextView = itemView.findViewById(R.id.date_textview)
             apriltagIdTextView = itemView.findViewById(R.id.apriltag_id_textview)
             timeTextView = itemView.findViewById(R.id.time_textview)
+            hapusText = itemView.findViewById(R.id.hapus_text)
+
+            hapusText.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val riwayat = riwayatList[position]
+                    interactionListener.onDeleteRiwayat(riwayat)
+                }
+            }
         }
 
         fun bind(riwayat: RiwayatEntity) {
@@ -65,7 +78,6 @@ class RiwayatDiffCallback(
     private val oldList: List<RiwayatEntity>,
     private val newList: List<RiwayatEntity>
 ) : DiffUtil.Callback() {
-
     override fun getOldListSize(): Int = oldList.size
 
     override fun getNewListSize(): Int = newList.size
@@ -76,7 +88,7 @@ class RiwayatDiffCallback(
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return (
-                oldList[oldItemPosition].id == newList[newItemPosition].id &&
+            oldList[oldItemPosition].id == newList[newItemPosition].id &&
             oldList[oldItemPosition].annotatedImageUri == newList[newItemPosition].annotatedImageUri &&
             oldList[oldItemPosition].originalImageUri == newList[newItemPosition].originalImageUri &&
             oldList[oldItemPosition].jsonFileUri == newList[newItemPosition].jsonFileUri &&

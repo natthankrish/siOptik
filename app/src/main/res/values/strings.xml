@@ -5,4 +5,7 @@
     <string name="stop_capture">Stop Capture</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="download">Download</string>
+    <string name="hapus">Hapus</string>
+    <string name="lihat_detail">Lihat detail</string>
+    <string name="lihat_gambar">Lihat gambar</string>
 </resources>

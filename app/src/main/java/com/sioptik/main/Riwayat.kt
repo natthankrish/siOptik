@@ -5,10 +5,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sioptik.main.riwayat_repository.RiwayatEntity
 import com.sioptik.main.riwayat_repository.RiwayatViewModel
 import com.sioptik.main.riwayat_repository.RiwayatViewModelFactory
 
-class Riwayat : AppCompatActivity() {
+class Riwayat : AppCompatActivity(), RiwayatInteractionListener {
     private val riwayatViewModel: RiwayatViewModel by viewModels {
         RiwayatViewModelFactory(this)
     }
@@ -16,7 +17,7 @@ class Riwayat : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayat)
 
-        val customAdapter = RiwayatRecyclerViewAdapter(emptyList())
+        val customAdapter = RiwayatRecyclerViewAdapter(emptyList(), this)
 
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this);
@@ -25,5 +26,9 @@ class Riwayat : AppCompatActivity() {
         riwayatViewModel.getAllRiwayat().observe(this) {
             customAdapter.updateData(it)
         }
+    }
+
+    override fun onDeleteRiwayat(riwayat: RiwayatEntity) {
+        riwayatViewModel.deleteRiwayat(riwayat)
     }
 }
