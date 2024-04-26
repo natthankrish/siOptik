@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sioptik.main.riwayat_repository.RiwayatEntity
 
-class RiwayatRecyclerViewAdapter(private val riwayatLiveData: List<RiwayatEntity>) :
+class RiwayatRecyclerViewAdapter(private var riwayatList: List<RiwayatEntity>) :
     RecyclerView.Adapter<RiwayatRecyclerViewAdapter.ModelViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -20,12 +20,20 @@ class RiwayatRecyclerViewAdapter(private val riwayatLiveData: List<RiwayatEntity
     }
 
     override fun onBindViewHolder(holder: RiwayatRecyclerViewAdapter.ModelViewHolder, position: Int) {
-        val riwayat = riwayatLiveData[position]
+        val riwayat = riwayatList[position]
         holder.bind(riwayat)
     }
 
     override fun getItemCount(): Int {
-        return riwayatLiveData.count()
+        return riwayatList.count()
+    }
+
+    fun updateData(newRiwayatList: List<RiwayatEntity>) {
+        val diffCallback = RiwayatDiffCallback(riwayatList, newRiwayatList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        riwayatList = newRiwayatList
+        diffResult.dispatchUpdatesTo(this)
     }
 
     inner class ModelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,10 +52,36 @@ class RiwayatRecyclerViewAdapter(private val riwayatLiveData: List<RiwayatEntity
         fun bind(riwayat: RiwayatEntity) {
             val date = riwayat.date
             val dateText = "${date.day}/${date.month}/${date.year}"
-            val timeText = "${date.hours}:${date.minutes}"
+            val apriltagIdText = "Apriltag ID: ${riwayat.apriltagId}"
+            val timeText = "Taken at ${String.format("%02d", date.hours)}:${String.format("%02d", date.minutes)}"
             dateTextView.text = dateText
-            apriltagIdTextView.text = riwayat.apriltagId.toString()
+            apriltagIdTextView.text = apriltagIdText
             timeTextView.text = timeText
         }
     }
 }
+
+class RiwayatDiffCallback(
+    private val oldList: List<RiwayatEntity>,
+    private val newList: List<RiwayatEntity>
+) : DiffUtil.Callback() {
+
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return (
+                oldList[oldItemPosition].id == newList[newItemPosition].id &&
+            oldList[oldItemPosition].annotatedImageUri == newList[newItemPosition].annotatedImageUri &&
+            oldList[oldItemPosition].originalImageUri == newList[newItemPosition].originalImageUri &&
+            oldList[oldItemPosition].jsonFileUri == newList[newItemPosition].jsonFileUri &&
+            oldList[oldItemPosition].date == newList[newItemPosition].date
+        )
+    }
+}
+

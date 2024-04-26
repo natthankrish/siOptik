@@ -1,26 +1,29 @@
 package com.sioptik.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sioptik.main.riwayat_repository.RiwayatEntity
-import java.util.Date
+import com.sioptik.main.riwayat_repository.RiwayatViewModel
+import com.sioptik.main.riwayat_repository.RiwayatViewModelFactory
 
 class Riwayat : AppCompatActivity() {
+    private val riwayatViewModel: RiwayatViewModel by viewModels {
+        RiwayatViewModelFactory(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayat)
 
-        val dataset = listOf(RiwayatEntity(1, 101, Date(), "test", "test", "test"))
-        val customAdapter = RiwayatRecyclerViewAdapter(dataset)
+        val customAdapter = RiwayatRecyclerViewAdapter(emptyList())
 
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this);
         recyclerView.adapter = customAdapter
+
+        riwayatViewModel.getAllRiwayat().observe(this) {
+            customAdapter.updateData(it)
+        }
     }
 }
