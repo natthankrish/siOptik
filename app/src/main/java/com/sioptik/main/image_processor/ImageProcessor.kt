@@ -134,12 +134,25 @@ class ImageProcessor {
 
     fun checkBoxesSelection(mat: Mat, rect: Rect) : Boolean{
         val aspect_threshold = 0.1
-        val width_lower_threshold = 20
-        val width_upper_threshold = 60
+
+        // For 1600px Width Image
+        val width_lower_threshold_ref = 20
+        val width_upper_threshold_ref = 70
+        val width_threshold_ref = 1600
+
         val height_mat_threshold_multiplier = 0.1
 
+        // wlt = width lower threshold, wut = width upper threshold
+        val wlt_ratio = width_lower_threshold_ref.toFloat() / width_threshold_ref.toFloat()
+        val wut_ratio = width_upper_threshold_ref.toFloat() / width_threshold_ref.toFloat()
+
         val h = mat.height()
+        val w = mat.width()
         val aspectRatio = rect.width.toDouble() / rect.height.toDouble()
+
+        // Calc width threshold
+        val width_lower_threshold = (wlt_ratio * w).toInt()
+        val width_upper_threshold = (wut_ratio * w).toInt()
 
         // Check one by one condition
         // Check aspect ratio -> To Avoid Rectangle
