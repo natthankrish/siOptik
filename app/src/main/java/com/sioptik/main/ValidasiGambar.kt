@@ -90,6 +90,7 @@ class ValidasiGambar : AppCompatActivity() {
                     sendButton.setOnClickListener {
                         Intent(this, HasilPemrosesan::class.java).also { previewIntent ->
                             previewIntent.putExtra("image_uri", savedUri.toString())
+                            previewIntent.putExtra("april_tag", apriltag.id.toString())
                             startActivity(previewIntent)
                         }
                     }

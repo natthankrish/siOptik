@@ -15,7 +15,10 @@ import com.sioptik.main.image_processor.ImageProcessor
 import com.sioptik.main.processing_result.DynamicContentFragment
 import com.sioptik.main.processing_result.FullScreenImageActivity
 import com.sioptik.main.processing_result.SharedViewModel
+import com.sioptik.main.processing_result.json_parser.model.BoxMetadata
+import com.sioptik.main.processing_result.json_parser.parser.BoxMetadataParser
 import com.sioptik.main.processing_result.json_parser.parser.JsonParser
+import org.json.JSONObject
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Scalar
@@ -26,11 +29,27 @@ class HasilPemrosesan : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hasil_pemrosesan)
-
         val imageView: ImageView = findViewById(R.id.processed_image)
+
+        // Get Extra
         val imageUriString = intent.getStringExtra("image_uri")
+        val april_tag = intent.getStringExtra("april_tag")
 
 
+        // Open the JSON metadata file
+        var boxesData : BoxMetadata? = null
+        try {
+            val inputStream = resources.openRawResource(R.raw.box_metadata)
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            boxesData = BoxMetadataParser.parse(jsonString, april_tag!!)
+            Log.i("TEST BOX DATA", boxesData.toString())
+        }  catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed to read JSON", Toast.LENGTH_SHORT).show()
+        }
+
+
+        // Image Processing
         if (imageUriString != null){
             val imageUri = Uri.parse(imageUriString)
 
