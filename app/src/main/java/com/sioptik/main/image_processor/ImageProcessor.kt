@@ -179,7 +179,6 @@ class ImageProcessor {
         if (!rectangles.isEmpty()) {
             // Create a copy of the processed image to draw on
             val visualizedImage = processedMat
-
             // Havent handled for RGBA and Unkown
             if (detectColorSpace(visualizedImage) == "Grayscale") {
                 Imgproc.cvtColor(visualizedImage, visualizedImage, Imgproc.COLOR_GRAY2BGR)
