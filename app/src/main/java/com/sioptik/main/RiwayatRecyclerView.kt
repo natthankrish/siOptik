@@ -41,13 +41,13 @@ class RiwayatRecyclerViewAdapter(
     }
 
     inner class ModelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var cardView: CardView
-        var dateTextView: TextView
-        var apriltagIdTextView: TextView
-        var timeTextView: TextView
-        var hapusText: TextView
-        var lihatDetailButton: Button
-        var lihatGambarButton: Button
+        private var cardView: CardView
+        private var dateTextView: TextView
+        private var apriltagIdTextView: TextView
+        private var timeTextView: TextView
+        private var hapusText: TextView
+        private var lihatDetailButton: Button
+        private var lihatGambarButton: Button
 
         init {
             cardView = itemView.findViewById(R.id.riwayat_card)
@@ -63,6 +63,14 @@ class RiwayatRecyclerViewAdapter(
                 if (position != RecyclerView.NO_POSITION) {
                     val riwayat = riwayatList[position]
                     interactionListener.onDeleteRiwayat(riwayat)
+                }
+            }
+
+            lihatDetailButton.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val riwayat = riwayatList[position]
+                    interactionListener.onClickLihatDetail(riwayat)
                 }
             }
 

@@ -34,7 +34,9 @@ class Riwayat : AppCompatActivity(), RiwayatInteractionListener {
     }
 
     override fun onClickLihatDetail(riwayat: RiwayatEntity) {
-        TODO("Not yet implemented")
+        val intent = Intent(this, DetailRiwayat::class.java)
+        intent.putExtra("jsonFileUri", riwayat.jsonFileUri)
+        startActivity(intent)
     }
 
     override fun onClickLihatGambar(riwayat: RiwayatEntity) {

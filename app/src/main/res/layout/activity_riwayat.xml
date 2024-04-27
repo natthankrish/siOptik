@@ -13,6 +13,7 @@
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/pjsbold"
             android:text="@string/riwayat_hasil_pemindaian"
+            android:textColor="@color/black"
             android:textSize="24sp"
             android:gravity="center"/>
     <androidx.constraintlayout.widget.ConstraintLayout

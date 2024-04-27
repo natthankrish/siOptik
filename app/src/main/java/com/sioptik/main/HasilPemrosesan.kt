@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.sioptik.main.image_processing_integration.JsonTemplateFactory
+import com.sioptik.main.image_processing_integration.OcrMock
 import com.sioptik.main.image_processor.ImageProcessor
 import com.sioptik.main.processing_result.DynamicContentFragment
 import com.sioptik.main.processing_result.FullScreenImageActivity
@@ -56,39 +57,10 @@ class HasilPemrosesan : AppCompatActivity() {
 
         }
 
-        val jsonString = """
-            {
-              "title": "Hasil Pemilihan Presiden RI",
-              "description": "Deskripsi Hihihi",
-              "aprilTagId": 100,
-              "tpsId": 10,
-              "candidates": [
-                {
-                  "orderNumber": 1,
-                  "choiceName": "Alis",
-                  "totalVoters": 500000
-                },
-                {
-                  "orderNumber": 2,
-                  "choiceName": "Prabski",
-                  "totalVoters": 450000
-                },
-                {
-                  "orderNumber": 3,
-                  "choiceName": "Skipper",
-                  "totalVoters": 350000
-                }
-              ]
-            }
-            """.trimIndent()
+        val apriltagId = 101
+        val ocr = OcrMock()
+        val jsonTemplate = ocr.detect(null, apriltagId)
 
-        val jsonTemplate = JsonTemplateFactory().jsonTemplate(101)
-        for (field in jsonTemplate.fieldNames) {
-            jsonTemplate.entry(field,  Random.nextInt(1000))
-        }
-
-        val jsonData = JsonParser.parse(jsonString)
-        viewModel.jsonData = jsonData
         viewModel.jsonTemplate = jsonTemplate
 
         supportFragmentManager.commit {

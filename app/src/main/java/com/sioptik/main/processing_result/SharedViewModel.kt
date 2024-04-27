@@ -5,6 +5,5 @@ import com.sioptik.main.image_processing_integration.JsonTemplate
 import com.sioptik.main.processing_result.json_parser.model.JsonData
 
 class SharedViewModel : ViewModel() {
-    var jsonData: JsonData? = null
     var jsonTemplate: JsonTemplate? = null
 }

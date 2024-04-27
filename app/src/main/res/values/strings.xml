@@ -12,4 +12,7 @@
     <string name="hasil_pemindaian">Hasil Pemindaian</string>
     <string name="kembali">Kembali</string>
     <string name="riwayat_hasil_pemindaian">Riwayat Hasil Pemindaian</string>
+    <string name="detail_hasil_pemindaian">Detail Hasil Pemindaian</string>
+    <string name="april_tag_id_placeholder">April Tag Id Placeholder</string>
+    <string name="placeholder">Placeholder</string>
 </resources>

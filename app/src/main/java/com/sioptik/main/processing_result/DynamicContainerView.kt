@@ -12,7 +12,6 @@ class DynamicContentFragment : Fragment() {
     private val viewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val jsonData = viewModel.jsonData
         val jsonTemplate = viewModel.jsonTemplate
         return jsonTemplate?.let { UiComponentBuilder.buildUi(jsonTemplate, requireContext()) }
     }
