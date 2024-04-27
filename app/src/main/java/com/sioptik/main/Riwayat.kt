@@ -1,5 +1,6 @@
 package com.sioptik.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,5 +31,15 @@ class Riwayat : AppCompatActivity(), RiwayatInteractionListener {
 
     override fun onDeleteRiwayat(riwayat: RiwayatEntity) {
         riwayatViewModel.deleteRiwayat(riwayat)
+    }
+
+    override fun onClickLihatDetail(riwayat: RiwayatEntity) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickLihatGambar(riwayat: RiwayatEntity) {
+        val intent = Intent(this, Gambar::class.java)
+        intent.putExtra("annotatedImageUri", riwayat.annotatedImageUri)
+        startActivity(intent)
     }
 }

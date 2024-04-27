@@ -3,6 +3,7 @@ package com.sioptik.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
@@ -45,6 +46,8 @@ class RiwayatRecyclerViewAdapter(
         var apriltagIdTextView: TextView
         var timeTextView: TextView
         var hapusText: TextView
+        var lihatDetailButton: Button
+        var lihatGambarButton: Button
 
         init {
             cardView = itemView.findViewById(R.id.riwayat_card)
@@ -52,12 +55,22 @@ class RiwayatRecyclerViewAdapter(
             apriltagIdTextView = itemView.findViewById(R.id.apriltag_id_textview)
             timeTextView = itemView.findViewById(R.id.time_textview)
             hapusText = itemView.findViewById(R.id.hapus_text)
+            lihatDetailButton = itemView.findViewById(R.id.lihat_detail_button)
+            lihatGambarButton = itemView.findViewById(R.id.lihat_gambar_button)
 
             hapusText.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val riwayat = riwayatList[position]
                     interactionListener.onDeleteRiwayat(riwayat)
+                }
+            }
+
+            lihatGambarButton.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val riwayat = riwayatList[position]
+                    interactionListener.onClickLihatGambar(riwayat)
                 }
             }
         }

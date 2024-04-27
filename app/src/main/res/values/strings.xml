@@ -8,4 +8,7 @@
     <string name="hapus">Hapus</string>
     <string name="lihat_detail">Lihat detail</string>
     <string name="lihat_gambar">Lihat gambar</string>
+    <string name="annotated_image">Annotated Image</string>
+    <string name="hasil_pemindaian">Hasil Pemindaian</string>
+    <string name="kembali">Kembali</string>
 </resources>
