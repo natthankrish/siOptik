@@ -12,8 +12,8 @@ class JsonTemplateFactory {
 
     companion object {
         private val apriltagJsonDictionary = mapOf<Int, JsonTemplate> (
-            101 to JsonTemplate(arrayOf("field_a", "field_b", "field_c")),
-            102 to JsonTemplate(arrayOf("caleg_1", "caleg_2", "caleg_3"))
+            101 to JsonTemplate(arrayOf("field_a", "field_b", "field_c"), 101),
+            102 to JsonTemplate(arrayOf("caleg_1", "caleg_2", "caleg_3"), 102)
         )
     }
 }

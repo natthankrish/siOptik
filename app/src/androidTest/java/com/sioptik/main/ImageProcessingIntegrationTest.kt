@@ -55,10 +55,16 @@ class ImageProcessingIntegrationTest {
         val jsonUri = jsonFileAdapter.saveJsonFile(jsonTemplate, appContext)
 
         val writtenJsonTemplate = jsonFileAdapter.readJsonFile(jsonUri.toFile().name, appContext)
+        println("Intended JSON template:")
+        println(jsonTemplate.toString())
+        println()
+        println("Written JSON template: ")
+        println(writtenJsonTemplate.toString())
         assert(writtenJsonTemplate.toString() == jsonTemplate.toString())
 
         val riwayatToInsert = RiwayatEntity(
             0,
+            apriltagId,
             Date(),
             jsonUri.toString(),
             "originalImageUri",
