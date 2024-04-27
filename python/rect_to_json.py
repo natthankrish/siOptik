@@ -94,12 +94,12 @@ def get_all_dict(april_tag_dict):
                   temp_dict = dict()
 
                   if (len(content) == 4):
-                    x = content[0]
-                    y = content[1]
-                    w = content[2] # Assume w = h
+                    x = int(content[0])
+                    y = int(content[1])
+                    w = int(content[2]) # Assume w = h
 
-                    adjusted_x = int(int(x) * W_RATIO)
-                    adjusted_y = int(int(y) * H_RATIO)
+                    adjusted_x = int((int(x) - TL_BORDER_X) * W_RATIO)
+                    adjusted_y = int((int(y) - TL_BORDER_Y) * H_RATIO)
                     adjusted_w = int(int(w) * SCALE_RATIO)
 
                     temp_dict['id'] = id_rect
