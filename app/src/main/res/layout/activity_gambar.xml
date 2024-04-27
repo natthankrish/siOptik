@@ -27,16 +27,16 @@
 
         <ImageView
             android:id="@+id/annotated_image"
-            android:layout_width="312dp"
-            android:layout_height="525dp"
+            android:layout_width="378dp"
+            android:layout_height="580dp"
             android:contentDescription="@string/annotated_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.75"
             app:layout_constraintHorizontal_bias="0.494"
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.75" />
 
         <Button

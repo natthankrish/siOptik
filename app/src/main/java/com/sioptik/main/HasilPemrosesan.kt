@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.sioptik.main.image_processing_integration.JsonTemplateFactory
 import com.sioptik.main.image_processor.ImageProcessor
 import com.sioptik.main.processing_result.DynamicContentFragment
 import com.sioptik.main.processing_result.FullScreenImageActivity
 import com.sioptik.main.processing_result.SharedViewModel
 import com.sioptik.main.processing_result.json_parser.parser.JsonParser
 import org.opencv.core.Scalar
+import kotlin.random.Random
 
 class HasilPemrosesan : AppCompatActivity() {
     private val viewModel: SharedViewModel by viewModels()
@@ -80,8 +82,14 @@ class HasilPemrosesan : AppCompatActivity() {
             }
             """.trimIndent()
 
+        val jsonTemplate = JsonTemplateFactory().jsonTemplate(101)
+        for (field in jsonTemplate.fieldNames) {
+            jsonTemplate.entry(field,  Random.nextInt(1000))
+        }
+
         val jsonData = JsonParser.parse(jsonString)
         viewModel.jsonData = jsonData
+        viewModel.jsonTemplate = jsonTemplate
 
         supportFragmentManager.commit {
             replace(R.id.fragmentContainerView, DynamicContentFragment())

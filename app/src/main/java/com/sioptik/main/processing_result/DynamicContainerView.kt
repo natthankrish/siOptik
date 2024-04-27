@@ -13,6 +13,7 @@ class DynamicContentFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val jsonData = viewModel.jsonData
-        return jsonData?.let { UiComponentBuilder.buildUi(it, requireContext()) }
+        val jsonTemplate = viewModel.jsonTemplate
+        return jsonTemplate?.let { UiComponentBuilder.buildUi(jsonTemplate, requireContext()) }
     }
 }

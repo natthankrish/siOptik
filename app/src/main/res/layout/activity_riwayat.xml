@@ -3,9 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Riwayat">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        <TextView
+            android:id="@+id/title_riwayat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/pjsbold"
+            android:text="@string/riwayat_hasil_pemindaian"
+            android:textSize="24sp"
+            android:gravity="center"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="365dp"
+            android:layout_height="652dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.285"
+            app:layout_constraintWidth_percent="0.90" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

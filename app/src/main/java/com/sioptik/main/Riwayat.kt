@@ -18,14 +18,14 @@ class Riwayat : AppCompatActivity(), RiwayatInteractionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayat)
 
-        val customAdapter = RiwayatRecyclerViewAdapter(emptyList(), this)
+        val riwayatRecyclerViewAdapter = RiwayatRecyclerViewAdapter(emptyList(), this)
 
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this);
-        recyclerView.adapter = customAdapter
+        recyclerView.adapter = riwayatRecyclerViewAdapter
 
         riwayatViewModel.getAllRiwayat().observe(this) {
-            customAdapter.updateData(it)
+            riwayatRecyclerViewAdapter.updateData(it)
         }
     }
 
