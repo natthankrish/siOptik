@@ -98,8 +98,8 @@ def get_all_dict(april_tag_dict):
                     y = int(content[1])
                     w = int(content[2]) # Assume w = h
 
-                    adjusted_x = int((int(x) - TL_BORDER_X) * W_RATIO)
-                    adjusted_y = int((int(y) - TL_BORDER_Y) * H_RATIO)
+                    adjusted_x = int((int(x) - TL_BORDER_X + PADDING) * W_RATIO)
+                    adjusted_y = int((int(y) - TL_BORDER_Y + PADDING) * H_RATIO)
                     adjusted_w = int(int(w) * SCALE_RATIO)
 
                     temp_dict['id'] = id_rect
