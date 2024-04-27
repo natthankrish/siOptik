@@ -282,4 +282,13 @@ class ImageProcessor {
         return null
     }
 
+    fun resizeImage(bitmap: Bitmap, width: Int): Bitmap {
+        val w = bitmap.width
+        val h = bitmap.height
+        val aspRat = h.toFloat() / w.toFloat()
+        val W = width
+        val H = (W * aspRat).toInt()
+        val b = Bitmap.createScaledBitmap(bitmap, W, H, false)
+        return b
+    }
 }

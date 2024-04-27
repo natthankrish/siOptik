@@ -75,9 +75,12 @@ class ValidasiGambar : AppCompatActivity() {
                     sendButton.isEnabled = false
                 } else {
                     // Save Cropped Image
+                    val resizedWidth = 1600
                     val cameraProcessor = CameraProcessor()
+                    val imageProcessor = ImageProcessor()
                     val tempFile = cameraProcessor.createTempFile(this, "CROPPED")
-                    cameraProcessor.saveBitmapToFile(processedBitmap, tempFile)
+                    val resizedBitmap = imageProcessor.resizeImage(processedBitmap, resizedWidth)
+                    cameraProcessor.saveBitmapToFile(resizedBitmap, tempFile)
 
                     val savedUri = FileProvider.getUriForFile(
                         this,
