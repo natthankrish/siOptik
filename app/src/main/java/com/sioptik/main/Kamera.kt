@@ -40,7 +40,7 @@ import java.util.concurrent.Executors
 
 class Kamera : AppCompatActivity() {
     private lateinit var viewBinding: KameraBinding
-    private val MAX_WIDTH = 1600;
+    private val MAX_WIDTH = 2400;
 
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService

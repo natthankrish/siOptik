@@ -120,10 +120,8 @@ class ImageProcessor {
             val numberVertices = approxCurve.total().toInt()
 
             if (numberVertices in 4..6) {
-                Log.i("TEST APPROX", approxCurve.toString())
                 val rect = Imgproc.boundingRect(MatOfPoint(*approxCurve.toArray()))
                 if (checkBoxesSelection(processedMat, rect)) {
-                    Log.i("TEST APPROX SELECTED", approxCurve.toString())
                     squares.add(rect)
                 }
             }
