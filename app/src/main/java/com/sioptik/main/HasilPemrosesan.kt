@@ -58,7 +58,7 @@ class HasilPemrosesan : AppCompatActivity() {
         }
 
         val apriltagId = 101
-        val ocr = OcrMock()
+        val ocr = OcrMock(this)
         val jsonTemplate = ocr.detect(null, apriltagId)
 
         viewModel.jsonTemplate = jsonTemplate

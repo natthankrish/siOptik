@@ -49,7 +49,7 @@ class ImageProcessingIntegrationTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
 
         val apriltagId = 101
-        val ocrMock = OcrMock()
+        val ocrMock = OcrMock(appContext)
         val jsonTemplate = ocrMock.detect(null, apriltagId)
         val jsonFileAdapter = JsonFileAdapter()
         val jsonUri = jsonFileAdapter.saveJsonFile(jsonTemplate, appContext)
