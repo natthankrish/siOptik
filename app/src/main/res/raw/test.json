@@ -1,0 +1,31 @@
+{
+  "101" : [
+  {
+    "fieldName": "Field name1",
+    "boxes": 3
+  },
+  {
+    "fieldName": "Field name2",
+    "boxes": 3
+  },
+  {
+    "fieldName": "Field name3",
+    "boxes": 3
+  }
+],
+
+  "102" : [
+    {
+      "fieldName": "Field name1",
+      "boxes": 3
+    },
+    {
+      "fieldName": "Field name2",
+      "boxes": 3
+    },
+    {
+      "fieldName": "Field name3",
+      "boxes": 3
+    }
+  ]
+}
